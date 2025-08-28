@@ -1,6 +1,6 @@
-﻿namespace Calculator
+﻿namespace Calculator.View
 {
-    partial class MainForm
+    partial class MathView
     {
         /// <summary>
         ///  Required designer variable.
@@ -54,15 +54,17 @@
             buttonPower = new Button();
             buttonSquare = new Button();
             panelHistory = new Panel();
-            buttonHistory = new Button();
             listHistory = new ListView();
+            buttonHistory = new Button();
+            comboBoxView = new ComboBox();
             panelHistory.SuspendLayout();
             SuspendLayout();
             // 
             // operationTextDisplay
             // 
+            operationTextDisplay.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             operationTextDisplay.Font = new Font("Segoe UI", 18F);
-            operationTextDisplay.Location = new Point(39, 35);
+            operationTextDisplay.Location = new Point(136, 35);
             operationTextDisplay.Name = "operationTextDisplay";
             operationTextDisplay.ReadOnly = true;
             operationTextDisplay.Size = new Size(268, 39);
@@ -71,6 +73,7 @@
             // 
             // button1
             // 
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             button1.Location = new Point(39, 94);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
@@ -101,6 +104,7 @@
             // 
             // button4
             // 
+            button4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             button4.Location = new Point(39, 146);
             button4.Name = "button4";
             button4.Size = new Size(75, 23);
@@ -131,6 +135,7 @@
             // 
             // button7
             // 
+            button7.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             button7.Location = new Point(39, 195);
             button7.Name = "button7";
             button7.Size = new Size(75, 23);
@@ -161,6 +166,7 @@
             // 
             // button10
             // 
+            button10.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             button10.Location = new Point(39, 244);
             button10.Name = "button10";
             button10.Size = new Size(75, 23);
@@ -181,7 +187,7 @@
             // 
             // buttonEqual
             // 
-            buttonEqual.Location = new Point(232, 244);
+            buttonEqual.Location = new Point(336, 324);
             buttonEqual.Name = "buttonEqual";
             buttonEqual.Size = new Size(75, 23);
             buttonEqual.TabIndex = 12;
@@ -191,7 +197,7 @@
             // 
             // buttonCleanAll
             // 
-            buttonCleanAll.Location = new Point(336, 48);
+            buttonCleanAll.Location = new Point(336, 94);
             buttonCleanAll.Name = "buttonCleanAll";
             buttonCleanAll.Size = new Size(75, 23);
             buttonCleanAll.TabIndex = 13;
@@ -201,7 +207,7 @@
             // 
             // buttonAdd
             // 
-            buttonAdd.Location = new Point(336, 94);
+            buttonAdd.Location = new Point(232, 244);
             buttonAdd.Name = "buttonAdd";
             buttonAdd.Size = new Size(75, 23);
             buttonAdd.TabIndex = 14;
@@ -211,7 +217,7 @@
             // 
             // buttonSubtract
             // 
-            buttonSubtract.Location = new Point(336, 146);
+            buttonSubtract.Location = new Point(336, 195);
             buttonSubtract.Name = "buttonSubtract";
             buttonSubtract.Size = new Size(75, 23);
             buttonSubtract.TabIndex = 15;
@@ -221,7 +227,7 @@
             // 
             // buttonMultiply
             // 
-            buttonMultiply.Location = new Point(336, 195);
+            buttonMultiply.Location = new Point(336, 244);
             buttonMultiply.Name = "buttonMultiply";
             buttonMultiply.Size = new Size(75, 23);
             buttonMultiply.TabIndex = 16;
@@ -231,7 +237,7 @@
             // 
             // buttonDivide
             // 
-            buttonDivide.Location = new Point(336, 244);
+            buttonDivide.Location = new Point(336, 283);
             buttonDivide.Name = "buttonDivide";
             buttonDivide.Size = new Size(75, 23);
             buttonDivide.TabIndex = 17;
@@ -241,6 +247,7 @@
             // 
             // buttonLeftParenthesis
             // 
+            buttonLeftParenthesis.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             buttonLeftParenthesis.Location = new Point(39, 283);
             buttonLeftParenthesis.Name = "buttonLeftParenthesis";
             buttonLeftParenthesis.Size = new Size(75, 23);
@@ -271,7 +278,7 @@
             // 
             // buttonSqrt
             // 
-            buttonSqrt.Location = new Point(336, 283);
+            buttonSqrt.Location = new Point(232, 324);
             buttonSqrt.Name = "buttonSqrt";
             buttonSqrt.Size = new Size(75, 23);
             buttonSqrt.TabIndex = 21;
@@ -281,7 +288,7 @@
             // 
             // buttonCleanEntry
             // 
-            buttonCleanEntry.Location = new Point(336, 12);
+            buttonCleanEntry.Location = new Point(336, 146);
             buttonCleanEntry.Name = "buttonCleanEntry";
             buttonCleanEntry.Size = new Size(75, 23);
             buttonCleanEntry.TabIndex = 22;
@@ -291,6 +298,7 @@
             // 
             // buttonPower
             // 
+            buttonPower.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             buttonPower.Location = new Point(39, 324);
             buttonPower.Name = "buttonPower";
             buttonPower.Size = new Size(75, 23);
@@ -313,15 +321,25 @@
             // 
             panelHistory.Controls.Add(listHistory);
             panelHistory.Dock = DockStyle.Right;
-            panelHistory.Location = new Point(427, 0);
+            panelHistory.Location = new Point(513, 0);
             panelHistory.Name = "panelHistory";
-            panelHistory.Size = new Size(294, 371);
+            panelHistory.Size = new Size(294, 400);
             panelHistory.TabIndex = 25;
             panelHistory.Visible = false;
             // 
+            // listHistory
+            // 
+            listHistory.Location = new Point(0, 0);
+            listHistory.Margin = new Padding(10);
+            listHistory.MinimumSize = new Size(200, 400);
+            listHistory.Name = "listHistory";
+            listHistory.Size = new Size(294, 400);
+            listHistory.TabIndex = 0;
+            listHistory.UseCompatibleStateImageBehavior = false;
+            // 
             // buttonHistory
             // 
-            buttonHistory.Location = new Point(336, 326);
+            buttonHistory.Location = new Point(39, 64);
             buttonHistory.Name = "buttonHistory";
             buttonHistory.Size = new Size(75, 23);
             buttonHistory.TabIndex = 26;
@@ -329,20 +347,21 @@
             buttonHistory.UseVisualStyleBackColor = true;
             buttonHistory.Click += buttonHistory_Click;
             // 
-            // listHistory
+            // comboBoxView
             // 
-            listHistory.Dock = DockStyle.Fill;
-            listHistory.Location = new Point(0, 0);
-            listHistory.Name = "listHistory";
-            listHistory.Size = new Size(294, 371);
-            listHistory.TabIndex = 0;
-            listHistory.UseCompatibleStateImageBehavior = false;
+            comboBoxView.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBoxView.FormattingEnabled = true;
+            comboBoxView.Location = new Point(10, 35);
+            comboBoxView.Name = "comboBoxView";
+            comboBoxView.Size = new Size(121, 23);
+            comboBoxView.TabIndex = 27;
+            comboBoxView.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
-            // MainForm
+            // MathView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(721, 371);
+            Controls.Add(comboBoxView);
             Controls.Add(buttonHistory);
             Controls.Add(panelHistory);
             Controls.Add(buttonSquare);
@@ -370,8 +389,10 @@
             Controls.Add(button2);
             Controls.Add(button1);
             Controls.Add(operationTextDisplay);
-            Name = "MainForm";
-            Text = "Form1";
+            MinimumSize = new Size(450, 400);
+            Name = "MathView";
+            Size = new Size(807, 400);
+            Load += MathView_Load;
             panelHistory.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -407,5 +428,6 @@
         private Panel panelHistory;
         private Button buttonHistory;
         private ListView listHistory;
+        private ComboBox comboBoxView;
     }
 }

@@ -1,16 +1,16 @@
-﻿using Calculator;
+﻿using Calculator.Presenter;
 
 namespace TestCalculator
 {
     [TestFixture]
     public class BasicEvaluator_ShuntingYard
     {
-        private BasicEvaluator _basicEvaluator;
+        private MathEvaluator _basicEvaluator;
 
         [SetUp]
         public void Setup()
         {
-            _basicEvaluator = new BasicEvaluator();
+            _basicEvaluator = new MathEvaluator();
         }
 
         [Test]

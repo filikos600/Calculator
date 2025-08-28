@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Calculator
+namespace Calculator.Data
 {
     public class Operation
     {
@@ -28,15 +28,5 @@ namespace Calculator
         [Required]
         public int OperationTypeId { get; set; }
         public OperationType OperationType { get; set; }
-
-        //public Operation() { }
-
-        //public Operation(string operation, DateTime date, double result ,int operationType) 
-        //{
-        //    OperationText = operation;
-        //    Date = date;
-        //    Result = result;
-        //    OperationTypeId = operationType;
-        //}
     }
 }

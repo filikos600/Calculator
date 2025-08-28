@@ -1,20 +1,32 @@
-﻿using System.ComponentModel;
+﻿using Calculator.Model;
+using Calculator.Presenter;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace Calculator
+namespace Calculator.View
 {
-    public partial class MainForm : Form
+    public partial class MathView : UserControl
     {
-
         //[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         //public IEvaluator Evaluator {private get; set; }
-
 
         private ExpressionBuilder expressionBuilder;
         private bool historyVisible = false;
         private DatabaseManager databaseManager;
         private List<string> operationsHistory;
 
-        public MainForm()
+        public event Action<ViewEnum>? RequestViewChange;
+
+        public MathView()
         {
             InitializeComponent();
             expressionBuilder = new ExpressionBuilder();
@@ -26,6 +38,19 @@ namespace Calculator
             panelHistory.Visible = false;
             //panelHistory.Controls.Add(listHistory);
 
+            comboBoxView.Items.Add("Mathematic");
+            comboBoxView.Items.Add("Currency Exchange");
+            comboBoxView.SelectedIndex = 0;
+
+            UpdateHistory();
+
+        }
+
+        private void MathView_Load(object sender, EventArgs e)
+        {
+            System.Drawing.Rectangle workingRectangle = Screen.PrimaryScreen.WorkingArea;
+            //this.Size = new System.Drawing.Size(Convert.ToInt32(0.3 * workingRectangle.Width), Convert.ToInt32(0.3 * workingRectangle.Height));
+            this.Location = new System.Drawing.Point(Convert.ToInt32(0.3 * workingRectangle.Width), Convert.ToInt32(0.3 * workingRectangle.Height));
         }
 
         private void ExpressionBuilderUpdateTextDisplay(string text)
@@ -117,11 +142,17 @@ namespace Calculator
         private void buttonHistory_Click(object sender, EventArgs e)
         {
             historyVisible = !historyVisible;
-            panelHistory.Visible = historyVisible;
             if (historyVisible)
             {
+                this.MinimumSize = new Size(MinimumSize.Width + 300, MinimumSize.Height);
                 UpdateHistory();
             }
+            else
+            {
+                this.MinimumSize = new Size(MinimumSize.Width - 300, MinimumSize.Height);
+                this.Width -= 300;
+            }
+            panelHistory.Visible = historyVisible;
         }
         private void UpdateHistory()
         {
@@ -141,5 +172,12 @@ namespace Calculator
             listHistory.Items.Add(operation);
         }
 
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxView.SelectedIndex == 1)
+            {
+                RequestViewChange?.Invoke((ViewEnum)comboBoxView.SelectedIndex);
+            }
+        }
     }
 }

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Calculator
+namespace Calculator.Model
 {
-    public interface IEvaluator
+    public enum ViewEnum
     {
-        public double Evaluate(string expression);
-
+        MathView,
+        ExchangeView
     }
 }

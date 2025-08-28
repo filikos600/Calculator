@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Calculator.Data;
+using Calculator.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Calculator
+namespace Calculator.Presenter
 {
     public  class SQLiteDbContext : DbContext
     {
         public DbSet<Operation> Operations { get; set; }
         public DbSet<OperationType> OperationTypes { get; set; }
+
+        public DbSet<CurrencyRate> CurrencyRates { get; set; }
+        public DbSet<CurrencyRateDate> CurrencyRateDates { get; set; }
 
         public string DbPath { get; }
 
@@ -18,7 +23,7 @@ namespace Calculator
             var path = AppContext.BaseDirectory;
             //var folder = Environment.SpecialFolder.LocalApplicationData;
             //var path = Environment.GetFolderPath(folder);
-            DbPath = System.IO.Path.Join(path, "calc.db");
+            DbPath = Path.Join(path, "calc.db");
 
             InitializeDB();
         }

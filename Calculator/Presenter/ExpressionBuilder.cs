@@ -6,28 +6,26 @@ using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Calculator
+namespace Calculator.Presenter
 {
     public class ExpressionBuilder
     {
-        private IEvaluator evaluator;
+        private MathEvaluator mathEvaluator;
         public event Action<string> UpdateTextDisplay;
         public string expression { get; set; }
-        private char? last_character;
         private int openedParenthesis;
         private bool fractionalPart;
 
         public ExpressionBuilder()      //TODO depedency inejctions
         {
             Reset();
-            evaluator = new BasicEvaluator();
+            mathEvaluator = new MathEvaluator();
            
         }
 
         public void Reset(bool update=true)
         {
             expression = "0";
-            last_character = null;
             openedParenthesis = 0;
             fractionalPart = false;
             if (update)
@@ -52,7 +50,7 @@ namespace Calculator
             else
                 expression = "0";
 
-            if (expression.Length == 1 && ((lastCharacter() == '-' || lastCharacter() == '+')))
+            if (expression.Length == 1 && (lastCharacter() == '-' || lastCharacter() == '+'))
                 expression = "0";
 
             UpdateTextDisplay?.Invoke(expression);
@@ -78,7 +76,7 @@ namespace Calculator
 
             try
             {
-                result = evaluator.Evaluate(expression);
+                result = mathEvaluator.Evaluate(expression);
                 SetResult(result);
                 return result;
             }
@@ -95,7 +93,7 @@ namespace Calculator
         {
             if (fractionalPart)
                 return;
-            if (expression.Length == 0 || !Char.IsDigit(lastCharacter()))
+            if (expression.Length == 0 || !char.IsDigit(lastCharacter()))
             {
                 expression += "0,";
                 fractionalPart = true;
@@ -111,7 +109,7 @@ namespace Calculator
 
         public void AddPower(bool square = false)
         {
-            if (!Char.IsDigit(lastCharacter()))
+            if (!char.IsDigit(lastCharacter()))
                 return;
 
             if (square)
@@ -125,7 +123,7 @@ namespace Calculator
             for (int i = expression.Length - 1; i >= 0; i--)
             {
                 char c = expression[i];
-                if (Char.IsDigit(c) || c == ',' || c =='-')
+                if (char.IsDigit(c) || c == ',' || c =='-')
                     number = c + number;
                 else
                 {
@@ -186,7 +184,7 @@ namespace Calculator
             for (int i = expression.Length-1; i>=0; i--)
             {
                 char c = expression[i];
-                if (Char.IsDigit(c) || c == ',')
+                if (char.IsDigit(c) || c == ',')
                     number = c + number;
                 else if (c == '-')
                 {

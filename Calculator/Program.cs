@@ -1,4 +1,4 @@
-namespace Calculator
+namespace Calculator.View
 {
     public static class Program
     {

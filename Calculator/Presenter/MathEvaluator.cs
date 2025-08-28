@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MathNet.Numerics;
 
-namespace Calculator
+namespace Calculator.Presenter
 {
-    public class BasicEvaluator : IEvaluator
+    public class MathEvaluator
     {
 
         private const string OPERATORS = "+-x÷^";
@@ -66,8 +66,8 @@ namespace Calculator
                     while (operatorsStack.TryPeek(out topOfStack)
                         && OPERATORS.Contains(topOfStack)
                         && (precedence[topOfStack] > precedence[token]
-                            || (precedence[topOfStack] == precedence[token]
-                                && OPERATORS.Contains(topOfStack))))
+                            || precedence[topOfStack] == precedence[token]
+                                && OPERATORS.Contains(topOfStack)))
                     {
                         outputQueue.Add(operatorsStack.Pop()); //Pop operators from the operator stack into the output queue
                     }
@@ -196,7 +196,7 @@ namespace Calculator
             for (int i = 0; i<expression.Length; i++)
             {
                 char c = expression[i];
-                if (Char.IsDigit(c) || c == ',')
+                if (char.IsDigit(c) || c == ',')
                 {
                     currentToken += c;
                 }
