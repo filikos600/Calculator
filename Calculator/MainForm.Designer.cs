@@ -51,6 +51,12 @@
             buttonFactorial = new Button();
             buttonSqrt = new Button();
             buttonCleanEntry = new Button();
+            buttonPower = new Button();
+            buttonSquare = new Button();
+            panelHistory = new Panel();
+            buttonHistory = new Button();
+            listHistory = new ListView();
+            panelHistory.SuspendLayout();
             SuspendLayout();
             // 
             // operationTextDisplay
@@ -269,7 +275,7 @@
             buttonSqrt.Name = "buttonSqrt";
             buttonSqrt.Size = new Size(75, 23);
             buttonSqrt.TabIndex = 21;
-            buttonSqrt.Text = "√x";
+            buttonSqrt.Text = "2√x";
             buttonSqrt.UseVisualStyleBackColor = true;
             buttonSqrt.Click += buttonSqrt_Click;
             // 
@@ -283,11 +289,64 @@
             buttonCleanEntry.UseVisualStyleBackColor = true;
             buttonCleanEntry.Click += buttonCleanEntry_Click;
             // 
+            // buttonPower
+            // 
+            buttonPower.Location = new Point(39, 324);
+            buttonPower.Name = "buttonPower";
+            buttonPower.Size = new Size(75, 23);
+            buttonPower.TabIndex = 23;
+            buttonPower.Text = "x^y";
+            buttonPower.UseVisualStyleBackColor = true;
+            buttonPower.Click += buttonPower_Click;
+            // 
+            // buttonSquare
+            // 
+            buttonSquare.Location = new Point(136, 324);
+            buttonSquare.Name = "buttonSquare";
+            buttonSquare.Size = new Size(75, 23);
+            buttonSquare.TabIndex = 24;
+            buttonSquare.Text = "x^2";
+            buttonSquare.UseVisualStyleBackColor = true;
+            buttonSquare.Click += buttonSquare_Click;
+            // 
+            // panelHistory
+            // 
+            panelHistory.Controls.Add(listHistory);
+            panelHistory.Dock = DockStyle.Right;
+            panelHistory.Location = new Point(427, 0);
+            panelHistory.Name = "panelHistory";
+            panelHistory.Size = new Size(294, 371);
+            panelHistory.TabIndex = 25;
+            panelHistory.Visible = false;
+            // 
+            // buttonHistory
+            // 
+            buttonHistory.Location = new Point(336, 326);
+            buttonHistory.Name = "buttonHistory";
+            buttonHistory.Size = new Size(75, 23);
+            buttonHistory.TabIndex = 26;
+            buttonHistory.Text = "History";
+            buttonHistory.UseVisualStyleBackColor = true;
+            buttonHistory.Click += buttonHistory_Click;
+            // 
+            // listHistory
+            // 
+            listHistory.Dock = DockStyle.Fill;
+            listHistory.Location = new Point(0, 0);
+            listHistory.Name = "listHistory";
+            listHistory.Size = new Size(294, 371);
+            listHistory.TabIndex = 0;
+            listHistory.UseCompatibleStateImageBehavior = false;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(442, 318);
+            ClientSize = new Size(721, 371);
+            Controls.Add(buttonHistory);
+            Controls.Add(panelHistory);
+            Controls.Add(buttonSquare);
+            Controls.Add(buttonPower);
             Controls.Add(buttonCleanEntry);
             Controls.Add(buttonSqrt);
             Controls.Add(buttonFactorial);
@@ -313,6 +372,7 @@
             Controls.Add(operationTextDisplay);
             Name = "MainForm";
             Text = "Form1";
+            panelHistory.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -342,5 +402,10 @@
         private Button buttonFactorial;
         private Button buttonSqrt;
         private Button buttonCleanEntry;
+        private Button buttonPower;
+        private Button buttonSquare;
+        private Panel panelHistory;
+        private Button buttonHistory;
+        private ListView listHistory;
     }
 }

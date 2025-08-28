@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Calculator
 {
@@ -15,10 +17,11 @@ namespace Calculator
         private int openedParenthesis;
         private bool fractionalPart;
 
-        public ExpressionBuilder()
+        public ExpressionBuilder()      //TODO depedency inejctions
         {
             Reset();
             evaluator = new BasicEvaluator();
+           
         }
 
         public void Reset(bool update=true)
@@ -39,7 +42,13 @@ namespace Calculator
         public void CleanEntry()
         {
             if (expression.Length > 1)
+            {
+                if (lastCharacter() == ')')
+                    openedParenthesis++;
+                else if (lastCharacter() == '(')
+                    openedParenthesis--;
                 expression = expression.Substring(0, expression.Length - 1);
+            }
             else
                 expression = "0";
 
@@ -49,10 +58,11 @@ namespace Calculator
             UpdateTextDisplay?.Invoke(expression);
         }
 
-        public void EvaluateExpression()
+
+        public double? EvaluateExpression()
         {
             if (lastCharacter() == '^')
-                return;
+                return null;
             while (openedParenthesis > 0)
             {
                 expression += ")";
@@ -62,16 +72,23 @@ namespace Calculator
             {
                 expression = "0" + expression;
             }
+
+            double result;
+            string old_expression = expression;
+
             try
             {
-                var result = evaluator.Evaluate(expression);
+                result = evaluator.Evaluate(expression);
                 SetResult(result);
+                return result;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Reset();
                 UpdateTextDisplay?.Invoke(ex.ToString());
+                return null;
             }
+            
         }
 
         public void AddComa()
@@ -92,6 +109,40 @@ namespace Calculator
             UpdateTextDisplay?.Invoke(expression);
         }
 
+        public void AddPower(bool square = false)
+        {
+            if (!Char.IsDigit(lastCharacter()))
+                return;
+
+            if (square)
+            {
+                expression += "^2";
+                UpdateTextDisplay?.Invoke(expression);
+                return;
+            }
+
+            string number = "";
+            for (int i = expression.Length - 1; i >= 0; i--)
+            {
+                char c = expression[i];
+                if (Char.IsDigit(c) || c == ',' || c =='-')
+                    number = c + number;
+                else
+                {
+                    openedParenthesis++;
+                    expression = expression.Substring(0, i + 1) + "(" + number + "^";
+                    UpdateTextDisplay?.Invoke(expression);
+                    return;
+                }
+            }
+            if (number != "")
+                number += ")";
+            else
+                openedParenthesis++;
+            expression = "(" + number + "^";
+            UpdateTextDisplay?.Invoke(expression);
+        }
+
         public void AddDigit(string digit)
         {
             if (expression.Length == 1 && expression[0] == '0')
@@ -103,19 +154,23 @@ namespace Calculator
 
         public void AddOperator(string oper)
         {
-            if (expression.Length == 1 && expression[0] == '0')
-            {
-                expression += oper;
-                UpdateTextDisplay?.Invoke(expression);
-                return;
-            }
+            //if (expression.Length == 1 && expression[0] == '0')
+            //{
+            //    expression += oper;
+            //    UpdateTextDisplay?.Invoke(expression);
+            //    return;
+            //}
 
-                string last_symbol = expression[^1].ToString();
+            string last_symbol = expression[^1].ToString();
 
-            if ("+-/÷*^".Contains(last_symbol) || last_symbol == ",")
+            if ("+-/÷*^,".Contains(last_symbol))
             {
-                String text = expression;
+                string text = expression;
                 expression = text.Remove(expression.Length - 1) + oper;
+            }
+            else if (last_symbol == "(")
+            {
+                expression += "0" + oper;
             }
             else
             {
@@ -159,8 +214,11 @@ namespace Calculator
 
         public void AddLeftParenthesis()
         {
+            if (expression.Length == 1 && expression[0] =='0')
+                expression = "(";
+            else
+                expression += "(";
             openedParenthesis++;
-            expression += "(";
             UpdateTextDisplay?.Invoke(expression);
         }
 

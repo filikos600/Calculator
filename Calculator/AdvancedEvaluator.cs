@@ -8,7 +8,7 @@ namespace Calculator
 {
     public class AdvancedEvaluator : IEvaluator
     {
-        public double Evaluate(String s)
+        public double Evaluate(string s)
         {
             return 0d;
         }

@@ -10,12 +10,21 @@ namespace Calculator
 
 
         private ExpressionBuilder expressionBuilder;
+        private bool historyVisible = false;
+        private DatabaseManager databaseManager;
+        private List<string> operationsHistory;
 
         public MainForm()
         {
             InitializeComponent();
             expressionBuilder = new ExpressionBuilder();
             expressionBuilder.UpdateTextDisplay += ExpressionBuilderUpdateTextDisplay;
+
+            databaseManager = new DatabaseManager();
+            operationsHistory = new List<string>();
+
+            panelHistory.Visible = false;
+            //panelHistory.Controls.Add(listHistory);
 
         }
 
@@ -51,7 +60,23 @@ namespace Calculator
 
         private void buttonEqual_Click(object sender, EventArgs e)
         {
-            expressionBuilder.EvaluateExpression();
+            var old_expression = expressionBuilder.expression;
+            var result = expressionBuilder.EvaluateExpression();
+            if (result == null)
+                return;
+            try
+            {
+                databaseManager.AddOperation(old_expression, result.Value, "math");
+            }
+            catch (Exception exDB)
+            {
+                MessageBox.Show("DataBase Error:\n" + exDB.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            operationsHistory.Add(old_expression + "=" + result.Value);
+            if (historyVisible)
+            {
+                UpdateHistory(old_expression + "=" + result.Value);
+            }
         }
 
         private void buttonRightParenthesis_Click(object sender, EventArgs e)
@@ -78,5 +103,43 @@ namespace Calculator
         {
             expressionBuilder.CleanEntry();
         }
+
+        private void buttonPower_Click(object sender, EventArgs e)
+        {
+            expressionBuilder.AddPower();
+        }
+
+        private void buttonSquare_Click(object sender, EventArgs e)
+        {
+            expressionBuilder.AddPower(square: true);
+        }
+
+        private void buttonHistory_Click(object sender, EventArgs e)
+        {
+            historyVisible = !historyVisible;
+            panelHistory.Visible = historyVisible;
+            if (historyVisible)
+            {
+                UpdateHistory();
+            }
+        }
+        private void UpdateHistory()
+        {
+            if (listHistory == null)
+                return;
+            listHistory.Items.Clear();
+            foreach (var oper in operationsHistory)
+            {
+                listHistory.Items.Add(oper);
+            }
+        }
+
+        private void UpdateHistory(string operation)
+        {
+            if (listHistory == null)
+                return;
+            listHistory.Items.Add(operation);
+        }
+
     }
 }
