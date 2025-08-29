@@ -15,9 +15,11 @@ namespace Calculator.Presenter
         public string expression { get; set; }
         private int openedParenthesis;
         private bool fractionalPart;
+        private bool onlyTwoDecimal;
 
-        public ExpressionBuilder()      //TODO depedency inejctions
+        public ExpressionBuilder(bool onlyTwoDecimal = false)      //TODO depedency inejctions
         {
+            this.onlyTwoDecimal = onlyTwoDecimal;
             Reset();
             mathEvaluator = new MathEvaluator();
            
@@ -39,18 +41,21 @@ namespace Calculator.Presenter
 
         public void CleanEntry()
         {
+            var lastChar = lastCharacter();
             if (expression.Length > 1)
             {
-                if (lastCharacter() == ')')
+                if (lastChar == ')')
                     openedParenthesis++;
-                else if (lastCharacter() == '(')
+                else if (lastChar == '(')
                     openedParenthesis--;
+                else if (lastChar == ',')
+                    fractionalPart = false;
                 expression = expression.Substring(0, expression.Length - 1);
             }
             else
                 expression = "0";
 
-            if (expression.Length == 1 && (lastCharacter() == '-' || lastCharacter() == '+'))
+            if (expression.Length == 1 && (lastChar == '-' || lastChar == '+'))
                 expression = "0";
 
             UpdateTextDisplay?.Invoke(expression);
@@ -143,7 +148,10 @@ namespace Calculator.Presenter
 
         public void AddDigit(string digit)
         {
-            if (expression.Length == 1 && expression[0] == '0')
+            var len = expression.Length;
+            if (onlyTwoDecimal && len > 3 && Char.IsDigit(expression[len - 1]) && Char.IsDigit(expression[len - 2]) && expression[len - 3] == ',')
+                return;
+            if (len == 1 && expression[0] == '0')
                 expression = digit;
             else
                 expression += digit;

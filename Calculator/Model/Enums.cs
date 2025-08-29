@@ -11,4 +11,10 @@ namespace Calculator.Model
         MathView,
         ExchangeView
     }
+
+    public enum DBOperationTypes
+    {
+        math,
+        currency
+    }
 }

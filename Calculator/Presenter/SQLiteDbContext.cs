@@ -15,6 +15,8 @@ namespace Calculator.Presenter
         public DbSet<OperationType> OperationTypes { get; set; }
 
         public DbSet<CurrencyRate> CurrencyRates { get; set; }
+
+        public DbSet<CurrencyRateCode> CurrencyRateCodes { get; set; }
         public DbSet<CurrencyRateDate> CurrencyRateDates { get; set; }
 
         public string DbPath { get; }
@@ -35,8 +37,8 @@ namespace Calculator.Presenter
             if (!OperationTypes.Any())
             {
                 OperationTypes.AddRange(
-                    new OperationType { OperationName = "math" },
-                    new OperationType { OperationName = "currency" }
+                    new OperationType { OperationName = DBOperationTypes.math.ToString() },
+                    new OperationType { OperationName = DBOperationTypes.currency.ToString() }
                 );
                 SaveChanges();
             }

@@ -28,13 +28,18 @@ namespace Calculator.View
             InitializeComponent();
             //currencyRates = new Dictionary<string, double>();
             exchangeEvaluator = new ExchangeEvaluator();
-            expressionBuilderA = new ExpressionBuilder();
+            expressionBuilderA = new ExpressionBuilder(onlyTwoDecimal: true);
             expressionBuilderA.UpdateTextDisplay += EBUpdateTextDisplayA;
-            expressionBuilderB = new ExpressionBuilder();
+            expressionBuilderB = new ExpressionBuilder(onlyTwoDecimal: true);
             expressionBuilderB.UpdateTextDisplay += EBUpdateTextDisplayB;
             comboBoxView.Items.Add("Mathematic");
             comboBoxView.Items.Add("Currency Exchange");
             comboBoxView.SelectedIndex = 1;
+        }
+
+        private void UpdateLastUpdateDate(DateTime time)
+        {
+            labelLastUpdate.Text = time.ToString();
         }
 
         private void UpdateComboBoxes(List<CurrencyRate> currencies)
@@ -45,8 +50,8 @@ namespace Calculator.View
             comboBoxB.Items.Clear();
             foreach (var currency in currencies)
             {
-                comboBoxA.Items.Add(currency.currencyCode);
-                comboBoxB.Items.Add(currency.currencyCode);
+                comboBoxA.Items.Add(currency.CurrencyRateCode.rateCode);
+                comboBoxB.Items.Add(currency.CurrencyRateCode.rateCode);
             }
             comboBoxA.SelectedIndex = selectedA;
             comboBoxB.SelectedIndex = selectedTo;
@@ -69,6 +74,7 @@ namespace Calculator.View
 
         private void EBUpdateTextDisplayA(string text)
         {
+
             if (textBoxValueA.InvokeRequired)
                 textBoxValueA.Invoke(new Action(() => textBoxValueA.Text = text));
             else
@@ -79,27 +85,21 @@ namespace Calculator.View
 
         private void EBUpdateTextDisplayB(string text)
         {
+            var formattedString = Double.Parse(text).ToString("F2");
             if (textBoxValueB.InvokeRequired)
-                textBoxValueB.Invoke(new Action(() => textBoxValueB.Text = text));
+                textBoxValueB.Invoke(new Action(() => textBoxValueB.Text = formattedString));
             else
-                textBoxValueB.Text = text;
+                textBoxValueB.Text = formattedString;
 
-        }
-
-        private void UpdateTextDisplayA(string text)
-        {
-            if (textBoxValueA.InvokeRequired)
-                textBoxValueA.Invoke(new Action(() => textBoxValueA.Text = text));
-            else
-                textBoxValueA.Text = text;
         }
 
         private void UpdateTextDisplayB(string text)
         {
+            var formattedString = Double.Parse(text).ToString("F2");
             if (textBoxValueB.InvokeRequired)
-                textBoxValueB.Invoke(new Action(() => textBoxValueB.Text = text));
+                textBoxValueB.Invoke(new Action(() => textBoxValueB.Text = formattedString));
             else
-                textBoxValueB.Text = text;
+                textBoxValueB.Text = formattedString;
 
             //UpdateTextDisplayA(exchangeEvaluator.Evaluate(text, comboBoxB.SelectedItem.ToString(), comboBoxA.SelectedItem.ToString()).ToString());
         }
@@ -107,8 +107,10 @@ namespace Calculator.View
         private async void ExchangeView_Load(object sender, EventArgs e)
         {
             SetupComboBoxes(exchangeEvaluator.rates);
+            if (exchangeEvaluator.lastRate != null)
+                UpdateLastUpdateDate(exchangeEvaluator.lastRate.Value);
 
-            var currencies = await Task.Run(() => exchangeEvaluator.UpdateExchanges());
+            var currencies = await Task.Run(() => exchangeEvaluator.GetUpdatedExchanges());
             UpdateComboBoxes(currencies);
         }
 
@@ -144,8 +146,9 @@ namespace Calculator.View
 
         private async void buttonUpdateRates_Click(object sender, EventArgs e)
         {
-            var currencies = await Task.Run(() => exchangeEvaluator.UpdateExchanges());
+            var currencies = await Task.Run(() => exchangeEvaluator.GetUpdatedExchanges());
             UpdateComboBoxes(currencies);
+            UpdateLastUpdateDate(currencies[0].CurrencyRateDate.rateDate);
         }
 
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -156,9 +159,15 @@ namespace Calculator.View
                 textBoxValueA.Text,
                 comboBoxA.SelectedItem.ToString(),
                 comboBoxB.SelectedItem.ToString()
-                ).ToString();
+                ).ToString("F2");
             UpdateTextDisplayB(resultB);
         }
 
+        private async void buttonSaveExchange_Click(object sender, EventArgs e)
+        {
+            await Task.Run(() => exchangeEvaluator.SaveExchangeToDb());
+            expressionBuilderA.Reset();
+            expressionBuilderB.Reset();
+        }
     }
 }

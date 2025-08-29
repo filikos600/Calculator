@@ -91,7 +91,7 @@ namespace Calculator.View
                 return;
             try
             {
-                databaseManager.AddOperation(old_expression, result.Value, "math");
+                databaseManager.AddOperation(old_expression, result.Value, DBOperationTypes.math.ToString());
             }
             catch (Exception exDB)
             {

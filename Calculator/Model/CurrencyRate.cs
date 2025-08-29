@@ -17,10 +17,11 @@ namespace Calculator.Data
         public int Id { get; set; }
 
         [Required]
-        public string currencyCode { get; set; }
+        public double exchangeRate { get; set; }
 
         [Required]
-        public double exchangeRate { get; set; }
+        public int CurrencyRateCodeId { get; set; }
+        public CurrencyRateCode CurrencyRateCode { get; set; }
 
         [Required]
         public int CurrencyRateDateId { get; set; }

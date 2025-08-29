@@ -40,37 +40,59 @@ namespace Calculator.Presenter
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>
-        public int AddExchangeRateDate(DateTime time)
+        public CurrencyRateDate AddExchangeRateDate(DateTime time)
         {
             using var db = new SQLiteDbContext();
 
             var existingRateDate = db.CurrencyRateDates.FirstOrDefault(t => t.rateDate == time);
 
             if (existingRateDate != null) {
-                return existingRateDate.Id;
+                return existingRateDate;
             }
 
             var newRateDate = new CurrencyRateDate { rateDate = time };
 
             db.CurrencyRateDates.Add(newRateDate);
             db.SaveChanges();
-            return newRateDate.Id;
+            return newRateDate;
+        }
+
+        public CurrencyRateCode AddExchangeRateCode(string code)
+        {
+            using var db = new SQLiteDbContext();
+            var currencyCode = db.CurrencyRateCodes.FirstOrDefault(c => c.rateCode == code);
+            if (currencyCode == null)
+            {
+                currencyCode = new CurrencyRateCode { rateCode = code };
+                db.CurrencyRateCodes.Add(currencyCode);
+                db.SaveChanges();
+            }
+            return currencyCode;
         }
 
         /// <summary>
+        /// For each item in dictionary it searches the db for CurrencyRateCode with matching code (if it finds none it creates new one), then searches for exchange rate with todays date (if finds none it adds one). 
+        /// If it finds a rate with todays date it gets updates with new rate
         /// Adds a number of currency rates with given dateId to a db and returns them as List. If cares with this date exist, they are updated instead.
         /// </summary>
         /// <param name="rateDict"></param>
         /// <param name="dateId"></param>
         /// <returns></returns>
-        public List<CurrencyRate> AddExchangeRates(Dictionary<string,double> rateDict, int dateId)
+        public List<CurrencyRate> AddExchangeRates(Dictionary<string,double> rateDict, DateTime date)
         {
             var currencies = new List<CurrencyRate>();
             using var db = new SQLiteDbContext();
 
+            var currencyRateDate = AddExchangeRateDate(date);
+
             foreach (var rD in rateDict) {
+                var code = rD.Key;
+                var rate = rD.Value;
+
+                var currencyRateCode = AddExchangeRateCode(code);
+
                 var existingCurrency = db.CurrencyRates.
-                    FirstOrDefault(c => c.CurrencyRateDateId == dateId && c.currencyCode == rD.Key);
+                    FirstOrDefault(c => c.CurrencyRateDateId == currencyRateDate.Id && currencyRateCode.rateCode == code);
 
                 if (existingCurrency != null) {
                     existingCurrency.exchangeRate = rD.Value;
@@ -81,15 +103,16 @@ namespace Calculator.Presenter
                 {
                     var newCurrencyRate = new CurrencyRate
                     {
-                        currencyCode = rD.Key,
-                        exchangeRate = rD.Value,
-                        CurrencyRateDateId = dateId
+                        CurrencyRateCodeId = currencyRateCode.Id,
+                        exchangeRate = rate,
+                        CurrencyRateDateId = currencyRateDate.Id
                     };
                     currencies.Add(newCurrencyRate);
                     db.CurrencyRates.Add(newCurrencyRate);
                 }
             }
             db.SaveChanges();
+
             return currencies;
         }
 
@@ -106,6 +129,7 @@ namespace Calculator.Presenter
 
             return db.CurrencyRates
                 .Include(r => r.CurrencyRateDate) 
+                .Include(r => r.CurrencyRateCode)
                 .Where(r => r.CurrencyRateDateId == latestDate.Id)
                 .ToList();
         }

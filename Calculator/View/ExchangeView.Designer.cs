@@ -49,6 +49,7 @@
             labelLastUpdate = new Label();
             buttonUpdateRates = new Button();
             comboBoxView = new ComboBox();
+            buttonSave = new Button();
             SuspendLayout();
             // 
             // button1
@@ -220,16 +221,16 @@
             // labelRate
             // 
             labelRate.AutoSize = true;
-            labelRate.Location = new Point(604, 341);
+            labelRate.Location = new Point(596, 308);
             labelRate.Name = "labelRate";
-            labelRate.Size = new Size(38, 15);
+            labelRate.Size = new Size(68, 15);
             labelRate.TabIndex = 18;
-            labelRate.Text = "label1";
+            labelRate.Text = "last update:";
             // 
             // labelLastUpdate
             // 
             labelLastUpdate.AutoSize = true;
-            labelLastUpdate.Location = new Point(604, 378);
+            labelLastUpdate.Location = new Point(604, 337);
             labelLastUpdate.Name = "labelLastUpdate";
             labelLastUpdate.Size = new Size(38, 15);
             labelLastUpdate.TabIndex = 19;
@@ -237,7 +238,7 @@
             // 
             // buttonUpdateRates
             // 
-            buttonUpdateRates.Location = new Point(604, 415);
+            buttonUpdateRates.Location = new Point(571, 366);
             buttonUpdateRates.Name = "buttonUpdateRates";
             buttonUpdateRates.Size = new Size(114, 23);
             buttonUpdateRates.TabIndex = 20;
@@ -255,10 +256,21 @@
             comboBoxView.TabIndex = 21;
             comboBoxView.SelectedIndexChanged += comboBoxView_SelectedIndexChanged;
             // 
+            // buttonSave
+            // 
+            buttonSave.Location = new Point(571, 161);
+            buttonSave.Name = "buttonSave";
+            buttonSave.Size = new Size(75, 23);
+            buttonSave.TabIndex = 22;
+            buttonSave.Text = "buttonSaveExchange";
+            buttonSave.UseVisualStyleBackColor = true;
+            buttonSave.Click += buttonSaveExchange_Click;
+            // 
             // ExchangeView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(buttonSave);
             Controls.Add(comboBoxView);
             Controls.Add(buttonUpdateRates);
             Controls.Add(labelLastUpdate);
@@ -311,5 +323,6 @@
         private Label labelLastUpdate;
         private Button buttonUpdateRates;
         private ComboBox comboBoxView;
+        private Button buttonSave;
     }
 }

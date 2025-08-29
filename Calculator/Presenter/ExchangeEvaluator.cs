@@ -1,4 +1,5 @@
 ﻿using Calculator.Data;
+using Calculator.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,19 +13,19 @@ namespace Calculator.Presenter
     public class ExchangeEvaluator
     {
         public Dictionary<string,double> rates;
-        private DateTime? lastRate;
+        public  DateTime? lastRate;
 
         private DatabaseManager databaseManager;
 
         public ExchangeEvaluator()
         {
             rates = new Dictionary<string, double>();
-            rates = getExchangeFromXml();
+            getExchangeFromXml();
 
             databaseManager = new DatabaseManager();
         }
 
-        public Dictionary<string, double> getExchangeFromXml()
+        public void getExchangeFromXml()
         {
             Console.WriteLine("started loading");
             var assembly = Assembly.GetExecutingAssembly();
@@ -37,21 +38,24 @@ namespace Calculator.Presenter
 
             var exchangeRatesTable = result.ExchangeRatesTable;
 
+            lastRate = exchangeRatesTable.EffectiveDate;
+
             DateTime rateTime = exchangeRatesTable.EffectiveDate;
             foreach (var rate in exchangeRatesTable.Rates)
             {
                 rates.Add(rate.Code, Decimal.ToDouble(rate.Mid));
             }
 
-            return rates;
+            return;
         }
 
-        public async Task<List<CurrencyRate>> UpdateExchanges()
+        public async Task UpdateExchanges()
         {
             var rates = databaseManager.GetExchange();
             if (rates.Count == 0)
             {
-                return await Task.Run(() => UpdateExchangesFromApi());
+                await Task.Run(() => UpdateExchangesFromApi());
+                return;
             }
 
             var dayToday = DateTime.Today;
@@ -59,23 +63,46 @@ namespace Calculator.Presenter
             {
                 if (rate.CurrencyRateDate.rateDate != dayToday)
                 {
-                    return await Task.Run(() => UpdateExchangesFromApi());
+                    await Task.Run(() => UpdateExchangesFromApi());
+                    return;
+                }
+            }
+        }
+
+        public async Task<List<CurrencyRate>> GetUpdatedExchanges()
+        {
+            var rates = databaseManager.GetExchange();
+            if (rates.Count == 0)
+            {
+                await Task.Run(() => UpdateExchangesFromApi());
+                return databaseManager.GetExchange();
+            }
+            else
+            {
+                var dayToday = DateTime.Today;
+                foreach (var rate in rates)
+                {
+                    if (rate.CurrencyRateDate.rateDate != dayToday)
+                    {
+                        await Task.Run(() => UpdateExchangesFromApi());
+                        return databaseManager.GetExchange();
+                    }
                 }
             }
             return rates;
+
         }
 
-        public async Task<List<CurrencyRate>> UpdateExchangesFromApi()
+        public async Task UpdateExchangesFromApi()
         {
             Dictionary<string, double> ratesDict;
             (ratesDict, lastRate) = await Task.Run(() => NbpAPIabuser.RequestData());
             if (lastRate == null)
             {
-                return new List<CurrencyRate>();
+                return;
             }
-            var dateId = databaseManager.AddExchangeRateDate(lastRate.Value);
 
-            return databaseManager.AddExchangeRates(ratesDict, dateId);
+            databaseManager.AddExchangeRates(ratesDict, lastRate.Value);
         }
 
         public double Evaluate(double value, CurrencyRate currencyFrom, CurrencyRate currencyTo)
@@ -90,5 +117,11 @@ namespace Calculator.Presenter
             return rates[currencyFrom] * val / rates[currencyTo];
         }
 
+
+        public async Task SaveExchangeToDb(string value, string currencyFrom, string currencyTo, string result)
+        {
+            var operationText = $"{value} {currencyFrom} => {currencyTo}";
+            databaseManager.AddOperation(operationText, Convert.ToDouble(result), DBOperationTypes.currency.ToString());
+        }
     }
 }
