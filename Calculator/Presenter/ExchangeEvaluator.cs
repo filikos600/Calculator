@@ -27,7 +27,6 @@ namespace Calculator.Presenter
 
         public void getExchangeFromXml()
         {
-            Console.WriteLine("started loading");
             var assembly = Assembly.GetExecutingAssembly();
             using var stream = assembly.GetManifestResourceStream("Calculator.Resources.startingExchange.xml");
 
@@ -41,6 +40,8 @@ namespace Calculator.Presenter
             lastRate = exchangeRatesTable.EffectiveDate;
 
             DateTime rateTime = exchangeRatesTable.EffectiveDate;
+
+            rates.Add("PLN", 1d);
             foreach (var rate in exchangeRatesTable.Rates)
             {
                 rates.Add(rate.Code, Decimal.ToDouble(rate.Mid));
@@ -51,7 +52,7 @@ namespace Calculator.Presenter
 
         public async Task UpdateExchanges()
         {
-            var rates = databaseManager.GetExchange();
+            var rates = await Task.Run(() => databaseManager.GetExchange());
             if (rates.Count == 0)
             {
                 await Task.Run(() => UpdateExchangesFromApi());
@@ -71,11 +72,11 @@ namespace Calculator.Presenter
 
         public async Task<List<CurrencyRate>> GetUpdatedExchanges()
         {
-            var rates = databaseManager.GetExchange();
+            var rates = await Task.Run(() => databaseManager.GetExchange());
             if (rates.Count == 0)
             {
                 await Task.Run(() => UpdateExchangesFromApi());
-                return databaseManager.GetExchange();
+                return await Task.Run(() => databaseManager.GetExchange());
             }
             else
             {
@@ -85,7 +86,7 @@ namespace Calculator.Presenter
                     if (rate.CurrencyRateDate.rateDate != dayToday)
                     {
                         await Task.Run(() => UpdateExchangesFromApi());
-                        return databaseManager.GetExchange();
+                        return await Task.Run(() => databaseManager.GetExchange());
                     }
                 }
             }
@@ -102,7 +103,7 @@ namespace Calculator.Presenter
                 return;
             }
 
-            databaseManager.AddExchangeRates(ratesDict, lastRate.Value);
+            await Task.Run(() => databaseManager.AddExchangeRates(ratesDict, lastRate.Value));
         }
 
         public double Evaluate(double value, CurrencyRate currencyFrom, CurrencyRate currencyTo)
@@ -121,7 +122,7 @@ namespace Calculator.Presenter
         public async Task SaveExchangeToDb(string value, string currencyFrom, string currencyTo, string result)
         {
             var operationText = $"{value} {currencyFrom} => {currencyTo}";
-            databaseManager.AddOperation(operationText, Convert.ToDouble(result), DBOperationTypes.currency.ToString());
+            await Task.Run(() => (databaseManager.AddOperation(operationText, Convert.ToDouble(result), DBOperationTypes.currency.ToString())));
         }
     }
 }

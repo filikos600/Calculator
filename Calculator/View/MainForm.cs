@@ -32,7 +32,12 @@ namespace Calculator.View
             if (view is MathView v1)
                 v1.RequestViewChange += HandleViewChange;
             if (view is ExchangeView v2)
+            {
                 v2.RequestViewChange += HandleViewChange;
+                v2.RequestBestRateViewChange += HandleBestRateViewChange;
+            }
+            if (view is BestRateHistory v3)
+                v3.RequestViewChange += HandleViewChange;
         }
 
         private void HandleViewChange(ViewEnum viewName)
@@ -45,28 +50,15 @@ namespace Calculator.View
                 case ViewEnum.ExchangeView:
                     ChangeView(new ExchangeView());
                     break;
+                default:
+                    ChangeView(new MathView());
+                    break;
             }
         }
 
-        //private void comboBoxView_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    panel1.Controls.Clear();
-        //    UserControl view = null;
-        //    switch (comboBoxView.SelectedIndex)
-        //    {
-        //        case 0:
-        //            view = new MathView();
-        //            break;
-        //        case 1:
-        //            view = new ExchangeView();
-        //            break;
-        //    }
-
-        //    if (view != null)
-        //    {
-        //        view.Dock = DockStyle.Fill;
-        //        panel1.Controls.Add(view);
-        //    }
-        //}
+        private void HandleBestRateViewChange(string curFrom, string curTo)
+        {
+            ChangeView(new BestRateHistory(curFrom, curTo));
+        }
     }
 }

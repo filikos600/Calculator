@@ -42,6 +42,12 @@ namespace Calculator.Presenter
                 );
                 SaveChanges();
             }
+
+            if (!CurrencyRateCodes.Any(c => c.rateCode == "PLN"))
+            {
+                CurrencyRateCodes.Add(new CurrencyRateCode { rateCode = "PLN" });
+                SaveChanges();
+            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

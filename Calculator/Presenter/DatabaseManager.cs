@@ -12,26 +12,26 @@ namespace Calculator.Presenter
     public class DatabaseManager
     {
         
-        public void AddOperation(string operationText, double result, string operationName)
+        public async Task AddOperation(string operationText, double result, string operationName)
         {
             using var db = new SQLiteDbContext();
 
-            var operationTypeId = db.OperationTypes.First(t => t.OperationName == operationName).Id;
+            var operationType = await db.OperationTypes.FirstAsync(t => t.OperationName == operationName);
 
             db.Operations.Add(new Operation {
                 OperationText=operationText,
                 Date = DateTime.Now,
                 Result = result,
-                OperationTypeId = operationTypeId});
+                OperationTypeId = operationType.Id});
             db.SaveChanges();
         }
 
-        public List<Operation> GetOperations()
+        public async Task<List<Operation>> GetOperations()
         {
             using var db = new SQLiteDbContext();
-            return db.Operations
+            return await db.Operations
                      .OrderByDescending(o => o.Id)
-                     .ToList();
+                     .ToListAsync();
         }
 
         /// <summary>
@@ -40,11 +40,11 @@ namespace Calculator.Presenter
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>
-        public CurrencyRateDate AddExchangeRateDate(DateTime time)
+        public async Task<CurrencyRateDate> AddExchangeRateDate(DateTime time)
         {
             using var db = new SQLiteDbContext();
 
-            var existingRateDate = db.CurrencyRateDates.FirstOrDefault(t => t.rateDate == time);
+            var existingRateDate = await db.CurrencyRateDates.FirstOrDefaultAsync(t => t.rateDate == time);
 
             if (existingRateDate != null) {
                 return existingRateDate;
@@ -57,10 +57,10 @@ namespace Calculator.Presenter
             return newRateDate;
         }
 
-        public CurrencyRateCode AddExchangeRateCode(string code)
+        public async Task<CurrencyRateCode> AddExchangeRateCode(string code)
         {
             using var db = new SQLiteDbContext();
-            var currencyCode = db.CurrencyRateCodes.FirstOrDefault(c => c.rateCode == code);
+            var currencyCode = await db.CurrencyRateCodes.FirstOrDefaultAsync(c => c.rateCode == code);
             if (currencyCode == null)
             {
                 currencyCode = new CurrencyRateCode { rateCode = code };
@@ -78,21 +78,21 @@ namespace Calculator.Presenter
         /// <param name="rateDict"></param>
         /// <param name="dateId"></param>
         /// <returns></returns>
-        public List<CurrencyRate> AddExchangeRates(Dictionary<string,double> rateDict, DateTime date)
+        public async Task<List<CurrencyRate>> AddExchangeRates(Dictionary<string,double> rateDict, DateTime date)
         {
             var currencies = new List<CurrencyRate>();
             using var db = new SQLiteDbContext();
 
-            var currencyRateDate = AddExchangeRateDate(date);
+            var currencyRateDate = await Task.Run(() => AddExchangeRateDate(date));
 
             foreach (var rD in rateDict) {
                 var code = rD.Key;
                 var rate = rD.Value;
 
-                var currencyRateCode = AddExchangeRateCode(code);
+                var currencyRateCode = await Task.Run(() => AddExchangeRateCode(code));
 
-                var existingCurrency = db.CurrencyRates.
-                    FirstOrDefault(c => c.CurrencyRateDateId == currencyRateDate.Id && currencyRateCode.rateCode == code);
+                var existingCurrency = await db.CurrencyRates.
+                    FirstOrDefaultAsync(c => c.CurrencyRateDateId == currencyRateDate.Id && currencyRateCode.rateCode == code);
 
                 if (existingCurrency != null) {
                     existingCurrency.exchangeRate = rD.Value;
@@ -116,22 +116,55 @@ namespace Calculator.Presenter
             return currencies;
         }
 
-        public List<CurrencyRate> GetExchange()
+        public async Task<List<CurrencyRate>> GetExchange()
         {
             using var db = new SQLiteDbContext();
 
-            var latestDate = db.CurrencyRateDates
+            var latestDate = await db.CurrencyRateDates
                 .OrderByDescending(d => d.rateDate)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             if (latestDate == null)
                 return new List<CurrencyRate>();
 
-            return db.CurrencyRates
+            return await db.CurrencyRates
                 .Include(r => r.CurrencyRateDate) 
                 .Include(r => r.CurrencyRateCode)
                 .Where(r => r.CurrencyRateDateId == latestDate.Id)
-                .ToList();
+                .ToListAsync();
+        }
+
+        public async Task<(string, DateTime)> GetBestRateFromPeriod(string currencyFrom, string currencyTo, DateTime startPeriod, DateTime endPeriod)
+        {
+            using var db = new SQLiteDbContext();
+
+            var currencyCodeFrom = await db.CurrencyRateCodes.FirstOrDefaultAsync(c => c.rateCode == currencyFrom);
+            var currencyCodeTo = await db.CurrencyRateCodes.FirstOrDefaultAsync(c => c.rateCode == currencyTo);
+
+            var allRates = await db.CurrencyRates
+                .Include(r => r.CurrencyRateDate)
+                .Include(r => r.CurrencyRateCode)
+                .Where(r => r.CurrencyRateDate.rateDate.Date >= startPeriod.Date && r.CurrencyRateDate.rateDate.Date <= endPeriod.Date)
+                .ToListAsync();
+
+            var bestResult = allRates
+                .GroupBy(r => r.CurrencyRateDate.rateDate)
+                .Select(g =>
+                {
+                    var fromRate = g.FirstOrDefault(r => r.CurrencyRateCode.rateCode == currencyFrom);
+                    var toRate = g.FirstOrDefault(r => r.CurrencyRateCode.rateCode == currencyTo);
+                    string rate = (fromRate.exchangeRate / toRate.exchangeRate).ToString("F2");
+                    return (rate , g.Key);
+                })
+                .Where(x => x.Item1 != "")
+                .OrderByDescending(x => x.Item1)
+                .FirstOrDefault();
+
+            if (bestResult.Item1 != "")
+                return bestResult;
+            else
+                return ("", DateTime.MinValue);
+
         }
     }
 }

@@ -36,7 +36,8 @@ namespace Calculator.Presenter
                 var exchangeRatesTable = result.ExchangeRatesTable;
 
                 List<CurrencyRate> curerncyList = new List<CurrencyRate>();
-                foreach(var rate in exchangeRatesTable.Rates)
+                dictRates.Add("PLN", 1d);
+                foreach (var rate in exchangeRatesTable.Rates)
                 {
                     dictRates.Add(rate.Code, Decimal.ToDouble(rate.Mid));
                 }
@@ -47,7 +48,7 @@ namespace Calculator.Presenter
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                //Console.WriteLine($"Error: {ex.Message}");
             }
             return (new Dictionary<string, double>(), null);
         }

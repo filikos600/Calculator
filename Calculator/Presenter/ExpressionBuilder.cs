@@ -10,7 +10,7 @@ namespace Calculator.Presenter
 {
     public class ExpressionBuilder
     {
-        private MathEvaluator mathEvaluator;
+        //private MathEvaluator mathEvaluator;
         public event Action<string> UpdateTextDisplay;
         public string expression { get; set; }
         private int openedParenthesis;
@@ -21,7 +21,7 @@ namespace Calculator.Presenter
         {
             this.onlyTwoDecimal = onlyTwoDecimal;
             Reset();
-            mathEvaluator = new MathEvaluator();
+            //mathEvaluator = new MathEvaluator();
            
         }
 
@@ -62,7 +62,7 @@ namespace Calculator.Presenter
         }
 
 
-        public double? EvaluateExpression()
+        public string? ValidateExpression()
         {
             if (lastCharacter() == '^')
                 return null;
@@ -75,22 +75,7 @@ namespace Calculator.Presenter
             {
                 expression = "0" + expression;
             }
-
-            double result;
-            string old_expression = expression;
-
-            try
-            {
-                result = mathEvaluator.Evaluate(expression);
-                SetResult(result);
-                return result;
-            }
-            catch(Exception ex)
-            {
-                Reset();
-                UpdateTextDisplay?.Invoke(ex.ToString());
-                return null;
-            }
+            return expression;
             
         }
 

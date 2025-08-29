@@ -67,7 +67,7 @@
             operationTextDisplay.Location = new Point(136, 35);
             operationTextDisplay.Name = "operationTextDisplay";
             operationTextDisplay.ReadOnly = true;
-            operationTextDisplay.Size = new Size(268, 39);
+            operationTextDisplay.Size = new Size(349, 39);
             operationTextDisplay.TabIndex = 0;
             operationTextDisplay.Text = "0";
             // 
@@ -187,7 +187,7 @@
             // 
             // buttonEqual
             // 
-            buttonEqual.Location = new Point(336, 324);
+            buttonEqual.Location = new Point(325, 324);
             buttonEqual.Name = "buttonEqual";
             buttonEqual.Size = new Size(75, 23);
             buttonEqual.TabIndex = 12;
@@ -197,7 +197,7 @@
             // 
             // buttonCleanAll
             // 
-            buttonCleanAll.Location = new Point(336, 94);
+            buttonCleanAll.Location = new Point(325, 94);
             buttonCleanAll.Name = "buttonCleanAll";
             buttonCleanAll.Size = new Size(75, 23);
             buttonCleanAll.TabIndex = 13;
@@ -217,7 +217,7 @@
             // 
             // buttonSubtract
             // 
-            buttonSubtract.Location = new Point(336, 195);
+            buttonSubtract.Location = new Point(325, 195);
             buttonSubtract.Name = "buttonSubtract";
             buttonSubtract.Size = new Size(75, 23);
             buttonSubtract.TabIndex = 15;
@@ -227,7 +227,7 @@
             // 
             // buttonMultiply
             // 
-            buttonMultiply.Location = new Point(336, 244);
+            buttonMultiply.Location = new Point(325, 244);
             buttonMultiply.Name = "buttonMultiply";
             buttonMultiply.Size = new Size(75, 23);
             buttonMultiply.TabIndex = 16;
@@ -237,7 +237,7 @@
             // 
             // buttonDivide
             // 
-            buttonDivide.Location = new Point(336, 283);
+            buttonDivide.Location = new Point(325, 283);
             buttonDivide.Name = "buttonDivide";
             buttonDivide.Size = new Size(75, 23);
             buttonDivide.TabIndex = 17;
@@ -288,7 +288,7 @@
             // 
             // buttonCleanEntry
             // 
-            buttonCleanEntry.Location = new Point(336, 146);
+            buttonCleanEntry.Location = new Point(325, 146);
             buttonCleanEntry.Name = "buttonCleanEntry";
             buttonCleanEntry.Size = new Size(75, 23);
             buttonCleanEntry.TabIndex = 22;
@@ -333,13 +333,13 @@
             listHistory.Margin = new Padding(10);
             listHistory.MinimumSize = new Size(200, 400);
             listHistory.Name = "listHistory";
-            listHistory.Size = new Size(294, 400);
+            listHistory.Size = new Size(300, 400);
             listHistory.TabIndex = 0;
             listHistory.UseCompatibleStateImageBehavior = false;
             // 
             // buttonHistory
             // 
-            buttonHistory.Location = new Point(39, 64);
+            buttonHistory.Location = new Point(417, 94);
             buttonHistory.Name = "buttonHistory";
             buttonHistory.Size = new Size(75, 23);
             buttonHistory.TabIndex = 26;

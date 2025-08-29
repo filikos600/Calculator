@@ -8,7 +8,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -16,12 +18,9 @@ namespace Calculator.View
 {
     public partial class MathView : UserControl
     {
-        //[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        //public IEvaluator Evaluator {private get; set; }
-
         private ExpressionBuilder expressionBuilder;
         private bool historyVisible = false;
-        private DatabaseManager databaseManager;
+        private MathEvaluator mathEvaluator;
         private List<string> operationsHistory;
 
         public event Action<ViewEnum>? RequestViewChange;
@@ -31,12 +30,11 @@ namespace Calculator.View
             InitializeComponent();
             expressionBuilder = new ExpressionBuilder();
             expressionBuilder.UpdateTextDisplay += ExpressionBuilderUpdateTextDisplay;
-
-            databaseManager = new DatabaseManager();
             operationsHistory = new List<string>();
 
             panelHistory.Visible = false;
-            //panelHistory.Controls.Add(listHistory);
+
+            mathEvaluator = new MathEvaluator();
 
             comboBoxView.Items.Add("Mathematic");
             comboBoxView.Items.Add("Currency Exchange");
@@ -83,24 +81,28 @@ namespace Calculator.View
             expressionBuilder.Reset();
         }
 
-        private void buttonEqual_Click(object sender, EventArgs e)
+        private async void buttonEqual_Click(object sender, EventArgs e)
         {
-            var old_expression = expressionBuilder.expression;
-            var result = expressionBuilder.EvaluateExpression();
-            if (result == null)
+            var old_expression = expressionBuilder.ValidateExpression();
+            if (old_expression == null)
                 return;
+            var result = 0d;
             try
             {
-                databaseManager.AddOperation(old_expression, result.Value, DBOperationTypes.math.ToString());
+                result = await Task.Run(() => mathEvaluator.Evaluate(old_expression));
+                expressionBuilder.SetResult(result);
             }
-            catch (Exception exDB)
+            catch (Exception ex)
             {
-                MessageBox.Show("DataBase Error:\n" + exDB.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                expressionBuilder.Reset();
+                ExpressionBuilderUpdateTextDisplay(ex.ToString());
+                return;
             }
-            operationsHistory.Add(old_expression + "=" + result.Value);
+
+            operationsHistory.Add(old_expression + "=" + result);
             if (historyVisible)
             {
-                UpdateHistory(old_expression + "=" + result.Value);
+                UpdateHistory(old_expression + "=" + result);
             }
         }
 

@@ -50,11 +50,16 @@
             buttonUpdateRates = new Button();
             comboBoxView = new ComboBox();
             buttonSave = new Button();
+            buttonHistory = new Button();
+            panelHistory = new Panel();
+            listHistory = new ListView();
+            buttonBestRate = new Button();
+            panelHistory.SuspendLayout();
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new Point(64, 122);
+            button1.Location = new Point(64, 176);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 0;
@@ -64,7 +69,7 @@
             // 
             // textBoxValueA
             // 
-            textBoxValueA.Location = new Point(564, 73);
+            textBoxValueA.Location = new Point(64, 92);
             textBoxValueA.Name = "textBoxValueA";
             textBoxValueA.ReadOnly = true;
             textBoxValueA.Size = new Size(100, 23);
@@ -73,7 +78,7 @@
             // 
             // textBoxValueB
             // 
-            textBoxValueB.Location = new Point(564, 210);
+            textBoxValueB.Location = new Point(252, 92);
             textBoxValueB.Name = "textBoxValueB";
             textBoxValueB.ReadOnly = true;
             textBoxValueB.Size = new Size(100, 23);
@@ -82,7 +87,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(166, 122);
+            button2.Location = new Point(155, 176);
             button2.Name = "button2";
             button2.Size = new Size(75, 23);
             button2.TabIndex = 3;
@@ -92,7 +97,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(267, 122);
+            button3.Location = new Point(240, 176);
             button3.Name = "button3";
             button3.Size = new Size(75, 23);
             button3.TabIndex = 4;
@@ -102,7 +107,7 @@
             // 
             // button4
             // 
-            button4.Location = new Point(64, 176);
+            button4.Location = new Point(64, 219);
             button4.Name = "button4";
             button4.Size = new Size(75, 23);
             button4.TabIndex = 5;
@@ -112,7 +117,7 @@
             // 
             // button5
             // 
-            button5.Location = new Point(166, 176);
+            button5.Location = new Point(155, 219);
             button5.Name = "button5";
             button5.Size = new Size(75, 23);
             button5.TabIndex = 6;
@@ -122,7 +127,7 @@
             // 
             // button6
             // 
-            button6.Location = new Point(267, 176);
+            button6.Location = new Point(240, 219);
             button6.Name = "button6";
             button6.Size = new Size(75, 23);
             button6.TabIndex = 7;
@@ -132,7 +137,7 @@
             // 
             // button7
             // 
-            button7.Location = new Point(64, 228);
+            button7.Location = new Point(64, 265);
             button7.Name = "button7";
             button7.Size = new Size(75, 23);
             button7.TabIndex = 8;
@@ -142,7 +147,7 @@
             // 
             // button8
             // 
-            button8.Location = new Point(166, 228);
+            button8.Location = new Point(155, 265);
             button8.Name = "button8";
             button8.Size = new Size(75, 23);
             button8.TabIndex = 9;
@@ -152,7 +157,7 @@
             // 
             // button9
             // 
-            button9.Location = new Point(267, 228);
+            button9.Location = new Point(240, 265);
             button9.Name = "button9";
             button9.Size = new Size(75, 23);
             button9.TabIndex = 10;
@@ -162,7 +167,7 @@
             // 
             // button0
             // 
-            button0.Location = new Point(64, 282);
+            button0.Location = new Point(64, 304);
             button0.Name = "button0";
             button0.Size = new Size(75, 23);
             button0.TabIndex = 11;
@@ -172,7 +177,7 @@
             // 
             // buttonComa
             // 
-            buttonComa.Location = new Point(267, 282);
+            buttonComa.Location = new Point(240, 308);
             buttonComa.Name = "buttonComa";
             buttonComa.Size = new Size(75, 23);
             buttonComa.TabIndex = 12;
@@ -182,7 +187,7 @@
             // 
             // buttonClearEntry
             // 
-            buttonClearEntry.Location = new Point(379, 122);
+            buttonClearEntry.Location = new Point(321, 219);
             buttonClearEntry.Name = "buttonClearEntry";
             buttonClearEntry.Size = new Size(75, 23);
             buttonClearEntry.TabIndex = 13;
@@ -192,7 +197,7 @@
             // 
             // buttonClearAll
             // 
-            buttonClearAll.Location = new Point(379, 176);
+            buttonClearAll.Location = new Point(321, 176);
             buttonClearAll.Name = "buttonClearAll";
             buttonClearAll.Size = new Size(75, 23);
             buttonClearAll.TabIndex = 14;
@@ -203,7 +208,7 @@
             // comboBoxA
             // 
             comboBoxA.FormattingEnabled = true;
-            comboBoxA.Location = new Point(564, 102);
+            comboBoxA.Location = new Point(64, 123);
             comboBoxA.Name = "comboBoxA";
             comboBoxA.Size = new Size(121, 23);
             comboBoxA.TabIndex = 15;
@@ -212,7 +217,7 @@
             // comboBoxB
             // 
             comboBoxB.FormattingEnabled = true;
-            comboBoxB.Location = new Point(564, 239);
+            comboBoxB.Location = new Point(252, 123);
             comboBoxB.Name = "comboBoxB";
             comboBoxB.Size = new Size(121, 23);
             comboBoxB.TabIndex = 16;
@@ -221,7 +226,7 @@
             // labelRate
             // 
             labelRate.AutoSize = true;
-            labelRate.Location = new Point(596, 308);
+            labelRate.Location = new Point(162, 355);
             labelRate.Name = "labelRate";
             labelRate.Size = new Size(68, 15);
             labelRate.TabIndex = 18;
@@ -230,7 +235,7 @@
             // labelLastUpdate
             // 
             labelLastUpdate.AutoSize = true;
-            labelLastUpdate.Location = new Point(604, 337);
+            labelLastUpdate.Location = new Point(174, 384);
             labelLastUpdate.Name = "labelLastUpdate";
             labelLastUpdate.Size = new Size(38, 15);
             labelLastUpdate.TabIndex = 19;
@@ -238,7 +243,7 @@
             // 
             // buttonUpdateRates
             // 
-            buttonUpdateRates.Location = new Point(571, 366);
+            buttonUpdateRates.Location = new Point(236, 365);
             buttonUpdateRates.Name = "buttonUpdateRates";
             buttonUpdateRates.Size = new Size(114, 23);
             buttonUpdateRates.TabIndex = 20;
@@ -258,7 +263,7 @@
             // 
             // buttonSave
             // 
-            buttonSave.Location = new Point(571, 161);
+            buttonSave.Location = new Point(377, 92);
             buttonSave.Name = "buttonSave";
             buttonSave.Size = new Size(75, 23);
             buttonSave.TabIndex = 22;
@@ -266,10 +271,53 @@
             buttonSave.UseVisualStyleBackColor = true;
             buttonSave.Click += buttonSaveExchange_Click;
             // 
+            // buttonHistory
+            // 
+            buttonHistory.Location = new Point(395, 123);
+            buttonHistory.Name = "buttonHistory";
+            buttonHistory.Size = new Size(75, 23);
+            buttonHistory.TabIndex = 27;
+            buttonHistory.Text = "History";
+            buttonHistory.UseVisualStyleBackColor = true;
+            buttonHistory.Click += buttonHistory_Click;
+            // 
+            // panelHistory
+            // 
+            panelHistory.Controls.Add(listHistory);
+            panelHistory.Dock = DockStyle.Right;
+            panelHistory.Location = new Point(500, 0);
+            panelHistory.Name = "panelHistory";
+            panelHistory.Size = new Size(300, 450);
+            panelHistory.TabIndex = 28;
+            panelHistory.Visible = false;
+            // 
+            // listHistory
+            // 
+            listHistory.Dock = DockStyle.Fill;
+            listHistory.Location = new Point(0, 0);
+            listHistory.MinimumSize = new Size(200, 400);
+            listHistory.Name = "listHistory";
+            listHistory.Size = new Size(300, 450);
+            listHistory.TabIndex = 0;
+            listHistory.UseCompatibleStateImageBehavior = false;
+            // 
+            // buttonBestRate
+            // 
+            buttonBestRate.Location = new Point(162, 35);
+            buttonBestRate.Name = "buttonBestRate";
+            buttonBestRate.Size = new Size(178, 41);
+            buttonBestRate.TabIndex = 29;
+            buttonBestRate.Text = "Check Best Historical Rate";
+            buttonBestRate.UseVisualStyleBackColor = true;
+            buttonBestRate.Click += buttonBestRate_Click;
+            // 
             // ExchangeView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(buttonBestRate);
+            Controls.Add(panelHistory);
+            Controls.Add(buttonHistory);
             Controls.Add(buttonSave);
             Controls.Add(comboBoxView);
             Controls.Add(buttonUpdateRates);
@@ -296,6 +344,7 @@
             Name = "ExchangeView";
             Size = new Size(800, 450);
             Load += ExchangeView_Load;
+            panelHistory.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -324,5 +373,9 @@
         private Button buttonUpdateRates;
         private ComboBox comboBoxView;
         private Button buttonSave;
+        private Button buttonHistory;
+        private Panel panelHistory;
+        private ListView listHistory;
+        private Button buttonBestRate;
     }
 }

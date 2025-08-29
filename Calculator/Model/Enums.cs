@@ -9,7 +9,8 @@ namespace Calculator.Model
     public enum ViewEnum
     {
         MathView,
-        ExchangeView
+        ExchangeView,
+        BestRateHistoryView
     }
 
     public enum DBOperationTypes

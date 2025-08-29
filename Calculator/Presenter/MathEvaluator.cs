@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Calculator.Model;
+using MathNet.Numerics;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MathNet.Numerics;
 
 namespace Calculator.Presenter
 {
@@ -14,16 +15,32 @@ namespace Calculator.Presenter
         private const string OPERATORS = "+-x÷^";
         private const string FUNCTIONS = "!√";
 
+        private DatabaseManager databaseManager;
+
+        public MathEvaluator()
+        {
+            databaseManager = new DatabaseManager();
+        }
+
         /// <summary>
         /// Tries to evaluate given expression, TODO throws and error if fails in any way
         /// </summary>
         /// <param name="expression"> given expression</param>
         /// <returns>evaluated expression as a double</returns>
-        public double Evaluate(string expression)
+        public async Task<double> Evaluate(string expression)
         {
             var tokens = Tokenize(expression);
             var rpn = ShuntingYardAlgorithm(tokens);
             var result = CalulcateReversePolishNotation(rpn);
+
+            try
+            {
+                await Task.Run(() => databaseManager.AddOperation(expression, result, DBOperationTypes.math.ToString()));
+            }
+            catch (Exception exDB)
+            {
+                MessageBox.Show("DataBase Error:\n" + exDB.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             return result;
         }
 

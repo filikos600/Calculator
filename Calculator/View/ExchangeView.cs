@@ -20,8 +20,11 @@ namespace Calculator.View
         private ExchangeEvaluator exchangeEvaluator;
         private ExpressionBuilder expressionBuilderA;
         private ExpressionBuilder expressionBuilderB;
+        private bool historyVisible = false;
+        private List<string> operationsHistory;
 
         public event Action<ViewEnum>? RequestViewChange;
+        public event Action<string, string>? RequestBestRateViewChange;
 
         public ExchangeView()
         {
@@ -35,6 +38,9 @@ namespace Calculator.View
             comboBoxView.Items.Add("Mathematic");
             comboBoxView.Items.Add("Currency Exchange");
             comboBoxView.SelectedIndex = 1;
+
+            operationsHistory = new List<string>();
+            panelHistory.Visible = false;
         }
 
         private void UpdateLastUpdateDate(DateTime time)
@@ -68,8 +74,8 @@ namespace Calculator.View
                 comboBoxA.Items.Add(currency.Key);
                 comboBoxB.Items.Add(currency.Key);
             }
-            comboBoxA.SelectedIndex = 1;
-            comboBoxB.SelectedIndex = 7;
+            comboBoxA.SelectedIndex = 0;
+            comboBoxB.SelectedIndex = 2;
         }
 
         private void EBUpdateTextDisplayA(string text)
@@ -165,9 +171,56 @@ namespace Calculator.View
 
         private async void buttonSaveExchange_Click(object sender, EventArgs e)
         {
-            await Task.Run(() => exchangeEvaluator.SaveExchangeToDb());
+            var textFrom = textBoxValueA.Text;
+            var curFrom = comboBoxA.SelectedItem.ToString();
+            var curTo = comboBoxB.SelectedItem.ToString();
+            var textTo = textBoxValueB.Text;
+
+            await Task.Run(() => exchangeEvaluator.SaveExchangeToDb(textFrom, curFrom, curTo, textTo));
+            operationsHistory.Add($"{textFrom} {curFrom} => {textTo} {curTo}");
+
             expressionBuilderA.Reset();
             expressionBuilderB.Reset();
+        }
+
+        private void buttonHistory_Click(object sender, EventArgs e)
+        {
+            historyVisible = !historyVisible;
+            if (historyVisible)
+            {
+                this.MinimumSize = new Size(MinimumSize.Width + 300, MinimumSize.Height);
+                UpdateHistory();
+            }
+            else
+            {
+                this.MinimumSize = new Size(MinimumSize.Width - 300, MinimumSize.Height);
+                this.Width -= 300;
+            }
+            panelHistory.Visible = historyVisible;
+        }
+
+        private void UpdateHistory()
+        {
+            if (listHistory == null)
+                return;
+            listHistory.Items.Clear();
+            foreach (var oper in operationsHistory)
+            {
+                listHistory.Items.Add(oper);
+            }
+        }
+
+        private void buttonBestRate_Click(object sender, EventArgs e)
+        {
+            string from = comboBoxA.SelectedItem.ToString();
+            string to = comboBoxB.SelectedItem.ToString();
+
+            RequestBestRateViewChange?.Invoke(from, to);
+
+            //using (var newForm = new BestRateHistoryView(from, to))
+            //{
+            //    newForm.ShowDialog();
+            //}
         }
     }
 }
