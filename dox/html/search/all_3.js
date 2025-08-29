@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['calculator_0',['Calculator',['../namespace_calculator.html',1,'']]],
+  ['calculator_2eassemblyinfo_2ecs_1',['Calculator.AssemblyInfo.cs',['../_calculator_8_assembly_info_8cs.html',1,'']]],
+  ['calculator_2eglobalusings_2eg_2ecs_2',['Calculator.GlobalUsings.g.cs',['../_calculator_8_global_usings_8g_8cs.html',1,'']]],
+  ['calculator_2exml_3',['Calculator.xml',['../_calculator_8xml.html',1,'']]],
+  ['calculator_3a_3adata_4',['Data',['../namespace_calculator_1_1_data.html',1,'Calculator']]],
+  ['calculator_3a_3amodel_5',['Model',['../namespace_calculator_1_1_model.html',1,'Calculator']]],
+  ['calculator_3a_3apresenter_6',['Presenter',['../namespace_calculator_1_1_presenter.html',1,'Calculator']]],
+  ['calculator_3a_3aview_7',['View',['../namespace_calculator_1_1_view.html',1,'Calculator']]],
+  ['cleanentry_8',['CleanEntry',['../interface_calculator_1_1_presenter_1_1_i_expression_builder.html#a7d09ce08c21fa955f6162c09cd2702b8',1,'Calculator.Presenter.IExpressionBuilder.CleanEntry()'],['../class_calculator_1_1_presenter_1_1_expression_builder.html#a400a992be81cc0dc058303553ddb852b',1,'Calculator.Presenter.ExpressionBuilder.CleanEntry()']]],
+  ['code_9',['Code',['../class_calculator_1_1_data_1_1_array_of_exchange_rates_table_exchange_rates_table_rate.html#afe9f67c7393609a9c76e88794cede3b4',1,'Calculator::Data::ArrayOfExchangeRatesTableExchangeRatesTableRate']]],
+  ['currency_10',['Currency',['../class_calculator_1_1_data_1_1_array_of_exchange_rates_table_exchange_rates_table_rate.html#ad6c83ac4a056b5642cdc58f9f9bee65e',1,'Calculator::Data::ArrayOfExchangeRatesTableExchangeRatesTableRate']]],
+  ['currency_11',['currency',['../namespace_calculator_1_1_model.html#acb567abd99c4672c54dbba21df20d6cba1af0389838508d7016a9841eb6273962',1,'Calculator::Model']]],
+  ['currencyfrom_12',['CurrencyFrom',['../class_calculator_1_1_view_1_1_best_rate_history.html#a58f9f113902c8374fe5800c4553cf24b',1,'Calculator::View::BestRateHistory']]],
+  ['currencyrate_13',['CurrencyRate',['../class_calculator_1_1_data_1_1_currency_rate.html',1,'Calculator::Data']]],
+  ['currencyrate_2ecs_14',['CurrencyRate.cs',['../_currency_rate_8cs.html',1,'']]],
+  ['currencyratecode_15',['CurrencyRateCode',['../class_calculator_1_1_model_1_1_currency_rate_code.html',1,'Calculator.Model.CurrencyRateCode'],['../class_calculator_1_1_data_1_1_currency_rate.html#a84aed332da69dd11e665661b9776636d',1,'Calculator.Data.CurrencyRate.CurrencyRateCode']]],
+  ['currencyratecode_2ecs_16',['CurrencyRateCode.cs',['../_currency_rate_code_8cs.html',1,'']]],
+  ['currencyratecodeid_17',['CurrencyRateCodeId',['../class_calculator_1_1_data_1_1_currency_rate.html#ab394b382f2091c5ff5bba0b451c16f12',1,'Calculator::Data::CurrencyRate']]],
+  ['currencyratecodes_18',['CurrencyRateCodes',['../class_calculator_1_1_presenter_1_1_s_q_lite_db_context.html#a804322893212ae3bf2d3d5b7da6cabac',1,'Calculator::Presenter::SQLiteDbContext']]],
+  ['currencyratedate_19',['CurrencyRateDate',['../class_calculator_1_1_model_1_1_currency_rate_date.html',1,'Calculator.Model.CurrencyRateDate'],['../class_calculator_1_1_data_1_1_currency_rate.html#a77e1ae11ac8dc1eec4e70738a8004ca0',1,'Calculator.Data.CurrencyRate.CurrencyRateDate']]],
+  ['currencyratedate_2ecs_20',['CurrencyRateDate.cs',['../_currency_rate_date_8cs.html',1,'']]],
+  ['currencyratedateid_21',['CurrencyRateDateId',['../class_calculator_1_1_data_1_1_currency_rate.html#ad04ca066953acf0abf54b6397221a612',1,'Calculator::Data::CurrencyRate']]],
+  ['currencyratedates_22',['CurrencyRateDates',['../class_calculator_1_1_presenter_1_1_s_q_lite_db_context.html#a2e221c7cb69811c222d55164b54bfa27',1,'Calculator::Presenter::SQLiteDbContext']]],
+  ['currencyrates_23',['CurrencyRates',['../class_calculator_1_1_presenter_1_1_s_q_lite_db_context.html#a7b286c3d19c09c0ae556da9caef5a8ee',1,'Calculator::Presenter::SQLiteDbContext']]],
+  ['currencyto_24',['CurrencyTo',['../class_calculator_1_1_view_1_1_best_rate_history.html#a6aef854d90dc3acb90d9fb797942828f',1,'Calculator::View::BestRateHistory']]]
+];

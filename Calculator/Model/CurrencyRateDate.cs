@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace Calculator.Model
 {
+    /// <summary>
+    /// Represents a date on which currency date was added to db
+    /// </summary>
     [Index(nameof(rateDate), IsUnique = true)]
     public class CurrencyRateDate
     {

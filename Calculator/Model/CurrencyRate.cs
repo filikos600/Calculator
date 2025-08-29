@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 namespace Calculator.Data
 {
 
+    /// <summary>
+    /// Represents a Currency Rate with two foreign keys for tables containg currencyCodes and date on which it was saved
+    /// </summary>
     public class CurrencyRate
     {
         [Key]

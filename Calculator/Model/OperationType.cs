@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Calculator.Data
 {
+    /// <summary>
+    /// Represent a operation type
+    /// </summary>
     public class OperationType
     {
         [Key]

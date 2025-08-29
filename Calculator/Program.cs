@@ -18,12 +18,12 @@ namespace Calculator.View
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             var services = new ServiceCollection();
-            services.AddSingleton<DatabaseManager>();
+            services.AddSingleton<IDatabaseManager, DatabaseManager>();
 
-            services.AddSingleton<MathEvaluator>();
-            services.AddSingleton<ExchangeEvaluator>();
+            services.AddSingleton<IMathEvaluator, MathEvaluator>();
+            services.AddSingleton<IExchangeEvaluator, ExchangeEvaluator>();
 
-            services.AddTransient<ExpressionBuilder>();
+            services.AddTransient<IExpressionBuilder, ExpressionBuilder>();
 
             services.AddTransient<MathView>();
             services.AddTransient<ExchangeView>();

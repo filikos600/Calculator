@@ -9,7 +9,23 @@ using System.Threading.Tasks;
 
 namespace Calculator.Presenter
 {
-    public class DatabaseManager
+    /// <summary>
+    /// Interface used for test mocking - for more info check <see cref="DatabaseManager"/.
+    /// </summary>
+    public interface IDatabaseManager
+    {
+        Task AddOperation(string operationText, double result, string operationName);
+        Task<CurrencyRateDate> AddExchangeRateDate(DateTime time);
+        Task<CurrencyRateCode> AddExchangeRateCode(string code);
+        Task<List<CurrencyRate>> AddExchangeRates(Dictionary<string, double> rateDict, DateTime date);
+        Task<List<CurrencyRate>> GetExchange();
+        Task<(string, DateTime)> GetBestRateFromPeriod(string currencyFrom, string currencyTo, DateTime startPeriod, DateTime endPeriod);
+    }
+
+    /// <summary>
+    /// Class responsible for interacting with Database. Allows to add operations, exchange rate dates, exchange rate codes, exchange rates. It also can read latest exchange data and return best exchange rate in given period.
+    /// </summary>
+    public class DatabaseManager : IDatabaseManager
     {
         private readonly SQLiteDbContext db;
         
@@ -17,6 +33,13 @@ namespace Calculator.Presenter
             db = context;
         }
 
+        /// <summary>
+        /// Adds an operation to the DB
+        /// </summary>
+        /// <param name="operationText">Body of the operation.</param>
+        /// <param name="result">Operation result.</param>
+        /// <param name="operationName">Name of the operation type.</param>
+        /// <returns>No object or value is returned by this method when it completes.</returns>
         public async Task AddOperation(string operationText, double result, string operationName)
         {
             var operationType = await db.OperationTypes.FirstAsync(t => t.OperationName == operationName);
@@ -29,19 +52,12 @@ namespace Calculator.Presenter
             db.SaveChanges();
         }
 
-        public async Task<List<Operation>> GetOperations()
-        {
-            return await db.Operations
-                     .OrderByDescending(o => o.Id)
-                     .ToListAsync();
-        }
-
         /// <summary>
         /// Adds a new exchange rate date to CurrencyRateDates db and returns the Id of newly created tuple.
-        /// If the date already exists returns its Id instead
+        /// If the date already exists returns its Id instead.
         /// </summary>
-        /// <param name="time"></param>
-        /// <returns></returns>
+        /// <param name="time">Current time to be checked agains.</param>
+        /// <returns>A task contains the <see cref="CurrencyRateDate"/.</returns>
         public async Task<CurrencyRateDate> AddExchangeRateDate(DateTime time)
         {
 
@@ -75,9 +91,9 @@ namespace Calculator.Presenter
         /// If it finds a rate with todays date it gets updates with new rate
         /// Adds a number of currency rates with given dateId to a db and returns them as List. If cares with this date exist, they are updated instead.
         /// </summary>
-        /// <param name="rateDict"></param>
-        /// <param name="dateId"></param>
-        /// <returns></returns>
+        /// <param name="rateDict">Dictionary where key correspond to currency codes, and values to rates.</param>
+        /// <param name="dateId">Day at wchich the dictionary data was optained</param>
+        /// <returns>A task contins the list of <see cref="CurrencyRateDate"/.</returns>
         public async Task<List<CurrencyRate>> AddExchangeRates(Dictionary<string,double> rateDict, DateTime date)
         {
             var currencies = new List<CurrencyRate>();
@@ -115,6 +131,10 @@ namespace Calculator.Presenter
             return currencies;
         }
 
+        /// <summary>
+        /// It asks database for most recent rates and return them as a list.
+        /// </summary>
+        /// <returns>>A task contins the list of <see cref="CurrencyRateDate"/.</returns>
         public async Task<List<CurrencyRate>> GetExchange()
         {
             var latestDate = await db.CurrencyRateDates
@@ -131,6 +151,14 @@ namespace Calculator.Presenter
                 .ToListAsync();
         }
 
+        /// <summary>
+        /// It reads currency codes from db correspoding to given strings. Then it fetches the rates data between given start Date and end Date. Then it calcualte the exchange rate between two currency codes for each day and finds the highest.
+        /// </summary>
+        /// <param name="currencyFrom">Currency code of currency to exchange from.</param>
+        /// <param name="currencyTo">Currency code of currency to exchange to.</param>
+        /// <param name="startPeriod">Start day of searched period.</param>
+        /// <param name="endPeriod">End day of searched period.</param>
+        /// <returns>A task contins the tuple containg best exchange rate as string and day of this rate.</returns>
         public async Task<(string, DateTime)> GetBestRateFromPeriod(string currencyFrom, string currencyTo, DateTime startPeriod, DateTime endPeriod)
         {
             var currencyCodeFrom = await db.CurrencyRateCodes.FirstOrDefaultAsync(c => c.rateCode == currencyFrom);

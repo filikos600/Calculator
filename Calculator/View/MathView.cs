@@ -16,41 +16,48 @@ using System.Windows.Forms;
 
 namespace Calculator.View
 {
+    /// <summary>
+    /// UserControl that correspond to mathematical calulator view.
+    /// </summary>
     public partial class MathView : UserControl
     {
-        private readonly ExpressionBuilder expressionBuilder;
-        private readonly MathEvaluator mathEvaluator;
+        private readonly IExpressionBuilder expressionBuilder;
+        private readonly IMathEvaluator mathEvaluator;
 
         private List<string> operationsHistory;
         private bool historyVisible = false;
 
         public event Action<ViewEnum>? RequestViewChange;
+        public event Action<bool> RequestHistoryPanel;
 
-        public MathView(ExpressionBuilder expressionBuilder, MathEvaluator mathEvaluator)
+        public MathView(IExpressionBuilder expressionBuilder, IMathEvaluator mathEvaluator)
         {
             InitializeComponent();
+            this.VisibleChanged += ExchangeView_VisibleChanged;
 
             this.expressionBuilder = expressionBuilder;
             this.mathEvaluator = mathEvaluator;
 
             expressionBuilder.onlyTwoDecimal = false;
             expressionBuilder.UpdateTextDisplay += ExpressionBuilderUpdateTextDisplay;
-           
+
             operationsHistory = new List<string>();
             panelHistory.Visible = false;
 
-            comboBoxView.Items.Add("Mathematic");
+            comboBoxView.Items.Add("Mathematical");
             comboBoxView.Items.Add("Currency Exchange");
             comboBoxView.SelectedIndex = 0;
 
             UpdateHistory();
         }
 
-        private void MathView_Load(object sender, EventArgs e)
+        private void ExchangeView_VisibleChanged(object? sender, EventArgs e)
         {
-            System.Drawing.Rectangle workingRectangle = Screen.PrimaryScreen.WorkingArea;
-            //this.Size = new System.Drawing.Size(Convert.ToInt32(0.3 * workingRectangle.Width), Convert.ToInt32(0.3 * workingRectangle.Height));
-            this.Location = new System.Drawing.Point(Convert.ToInt32(0.3 * workingRectangle.Width), Convert.ToInt32(0.3 * workingRectangle.Height));
+            if (this.Visible)
+            {
+                expressionBuilder.Reset();
+                comboBoxView.SelectedIndex = 0;
+            }
         }
 
         private void ExpressionBuilderUpdateTextDisplay(string text)
@@ -148,13 +155,12 @@ namespace Calculator.View
             historyVisible = !historyVisible;
             if (historyVisible)
             {
-                this.MinimumSize = new Size(MinimumSize.Width + 300, MinimumSize.Height);
+                RequestHistoryPanel(true);
                 UpdateHistory();
             }
             else
             {
-                this.MinimumSize = new Size(MinimumSize.Width - 300, MinimumSize.Height);
-                this.Width -= 300;
+                RequestHistoryPanel(false);
             }
             panelHistory.Visible = historyVisible;
         }
@@ -165,8 +171,10 @@ namespace Calculator.View
             listHistory.Items.Clear();
             foreach (var oper in operationsHistory)
             {
-                listHistory.Items.Add(oper);
+                listHistory.Items.Add($"  {oper}");
             }
+            if (operationsHistory.Count == 0)
+                listHistory.Items.Add("  history is empty");
         }
 
         private void UpdateHistory(string operation)
@@ -182,6 +190,11 @@ namespace Calculator.View
             {
                 RequestViewChange?.Invoke((ViewEnum)comboBoxView.SelectedIndex);
             }
+        }
+
+        private void buttonExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

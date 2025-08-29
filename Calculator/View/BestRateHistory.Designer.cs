@@ -47,6 +47,7 @@
             // 
             // panelInput
             // 
+            panelInput.BackColor = Color.FromArgb(40, 40, 40);
             panelInput.Controls.Add(buttonBack);
             panelInput.Controls.Add(buttonOk);
             panelInput.Controls.Add(labelTo);
@@ -54,133 +55,163 @@
             panelInput.Controls.Add(dateTimePickerEnd);
             panelInput.Controls.Add(dateTimePickerStart);
             panelInput.Controls.Add(labelInput);
-            panelInput.Location = new Point(89, 93);
+            panelInput.Location = new Point(0, 0);
             panelInput.Name = "panelInput";
-            panelInput.Size = new Size(300, 200);
+            panelInput.Size = new Size(400, 400);
             panelInput.TabIndex = 0;
             // 
             // buttonBack
             // 
-            buttonBack.Location = new Point(166, 174);
+            buttonBack.BackColor = Color.FromArgb(50, 50, 50);
+            buttonBack.FlatAppearance.BorderSize = 0;
+            buttonBack.FlatStyle = FlatStyle.Flat;
+            buttonBack.Font = new Font("Arial Rounded MT Bold", 18F);
+            buttonBack.ForeColor = SystemColors.ControlLightLight;
+            buttonBack.Location = new Point(224, 300);
             buttonBack.Name = "buttonBack";
-            buttonBack.Size = new Size(75, 23);
+            buttonBack.Size = new Size(96, 50);
             buttonBack.TabIndex = 6;
             buttonBack.Text = "BACK";
-            buttonBack.UseVisualStyleBackColor = true;
+            buttonBack.UseVisualStyleBackColor = false;
             buttonBack.Click += buttonBack_Click;
             // 
             // buttonOk
             // 
-            buttonOk.Location = new Point(41, 174);
+            buttonOk.BackColor = Color.FromArgb(50, 50, 50);
+            buttonOk.FlatAppearance.BorderSize = 0;
+            buttonOk.FlatStyle = FlatStyle.Flat;
+            buttonOk.Font = new Font("Arial Rounded MT Bold", 18F);
+            buttonOk.ForeColor = SystemColors.ControlLightLight;
+            buttonOk.Location = new Point(80, 300);
             buttonOk.Name = "buttonOk";
-            buttonOk.Size = new Size(75, 23);
+            buttonOk.Size = new Size(96, 50);
             buttonOk.TabIndex = 5;
             buttonOk.Text = "OK";
-            buttonOk.UseVisualStyleBackColor = true;
+            buttonOk.UseVisualStyleBackColor = false;
             buttonOk.Click += buttonOk_Click;
             // 
             // labelTo
             // 
-            labelTo.AutoSize = true;
-            labelTo.Location = new Point(41, 117);
+            labelTo.Font = new Font("Arial Rounded MT Bold", 27.75F);
+            labelTo.ForeColor = SystemColors.ControlLightLight;
+            labelTo.Location = new Point(100, 204);
             labelTo.Name = "labelTo";
-            labelTo.Size = new Size(19, 15);
+            labelTo.Size = new Size(200, 43);
             labelTo.TabIndex = 4;
             labelTo.Text = "To";
+            labelTo.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // labelFrom
             // 
-            labelFrom.AutoSize = true;
-            labelFrom.Location = new Point(41, 58);
+            labelFrom.Font = new Font("Arial Rounded MT Bold", 27.75F);
+            labelFrom.ForeColor = SystemColors.ControlLightLight;
+            labelFrom.Location = new Point(100, 115);
             labelFrom.Name = "labelFrom";
-            labelFrom.Size = new Size(35, 15);
+            labelFrom.Size = new Size(200, 43);
             labelFrom.TabIndex = 3;
             labelFrom.Text = "From";
+            labelFrom.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // dateTimePickerEnd
             // 
-            dateTimePickerEnd.Location = new Point(41, 135);
+            dateTimePickerEnd.CalendarFont = new Font("Arial Rounded MT Bold", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dateTimePickerEnd.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 238);
+            dateTimePickerEnd.Format = DateTimePickerFormat.Short;
+            dateTimePickerEnd.Location = new Point(100, 250);
             dateTimePickerEnd.Name = "dateTimePickerEnd";
-            dateTimePickerEnd.Size = new Size(200, 23);
+            dateTimePickerEnd.Size = new Size(200, 35);
             dateTimePickerEnd.TabIndex = 2;
             // 
             // dateTimePickerStart
             // 
-            dateTimePickerStart.Location = new Point(41, 76);
+            dateTimePickerStart.Font = new Font("Arial Rounded MT Bold", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dateTimePickerStart.Format = DateTimePickerFormat.Short;
+            dateTimePickerStart.Location = new Point(100, 174);
             dateTimePickerStart.Name = "dateTimePickerStart";
-            dateTimePickerStart.Size = new Size(200, 23);
+            dateTimePickerStart.Size = new Size(200, 32);
             dateTimePickerStart.TabIndex = 1;
             // 
             // labelInput
             // 
-            labelInput.AutoSize = true;
-            labelInput.Location = new Point(26, 23);
+            labelInput.Font = new Font("Arial Rounded MT Bold", 27.75F);
+            labelInput.ForeColor = SystemColors.ControlLightLight;
+            labelInput.Location = new Point(0, 0);
             labelInput.Name = "labelInput";
-            labelInput.Size = new Size(250, 15);
+            labelInput.Size = new Size(400, 106);
             labelInput.TabIndex = 0;
-            labelInput.Text = "Check best exchange rate in given data frame:";
+            labelInput.Text = "Check best exchange rate";
+            labelInput.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // panelOutput
             // 
+            panelOutput.BackColor = Color.FromArgb(40, 40, 40);
             panelOutput.Controls.Add(labelRate);
             panelOutput.Controls.Add(labelDate);
             panelOutput.Controls.Add(buttonOutput);
             panelOutput.Controls.Add(labelOutput);
-            panelOutput.Location = new Point(462, 92);
+            panelOutput.Location = new Point(400, 0);
             panelOutput.Name = "panelOutput";
-            panelOutput.Size = new Size(300, 200);
+            panelOutput.Size = new Size(400, 400);
             panelOutput.TabIndex = 1;
             // 
             // labelRate
             // 
-            labelRate.AutoSize = true;
-            labelRate.Location = new Point(126, 127);
+            labelRate.Font = new Font("Arial Rounded MT Bold", 27.75F);
+            labelRate.ForeColor = SystemColors.ControlLightLight;
+            labelRate.Location = new Point(100, 224);
             labelRate.Name = "labelRate";
-            labelRate.Size = new Size(38, 15);
+            labelRate.Size = new Size(200, 43);
             labelRate.TabIndex = 3;
             labelRate.Text = "label2";
+            labelRate.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // labelDate
             // 
-            labelDate.AutoSize = true;
-            labelDate.Location = new Point(126, 77);
+            labelDate.Font = new Font("Arial Rounded MT Bold", 27.75F);
+            labelDate.ForeColor = SystemColors.ControlLightLight;
+            labelDate.Location = new Point(100, 135);
             labelDate.Name = "labelDate";
-            labelDate.Size = new Size(38, 15);
+            labelDate.Size = new Size(200, 43);
             labelDate.TabIndex = 2;
             labelDate.Text = "label1";
+            labelDate.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // buttonOutput
             // 
-            buttonOutput.Location = new Point(104, 174);
+            buttonOutput.BackColor = Color.FromArgb(50, 50, 50);
+            buttonOutput.FlatAppearance.BorderSize = 0;
+            buttonOutput.FlatStyle = FlatStyle.Flat;
+            buttonOutput.Font = new Font("Arial Rounded MT Bold", 18F);
+            buttonOutput.ForeColor = SystemColors.ControlLightLight;
+            buttonOutput.Location = new Point(150, 300);
             buttonOutput.Name = "buttonOutput";
-            buttonOutput.Size = new Size(75, 23);
+            buttonOutput.Size = new Size(96, 50);
             buttonOutput.TabIndex = 1;
             buttonOutput.Text = "OK";
-            buttonOutput.UseVisualStyleBackColor = true;
+            buttonOutput.UseVisualStyleBackColor = false;
             buttonOutput.Click += buttonBack_Click;
             // 
             // labelOutput
             // 
-            labelOutput.AutoSize = true;
-            labelOutput.Location = new Point(87, 24);
+            labelOutput.Font = new Font("Arial Rounded MT Bold", 27.75F);
+            labelOutput.ForeColor = SystemColors.ControlLightLight;
+            labelOutput.Location = new Point(23, 11);
             labelOutput.Name = "labelOutput";
-            labelOutput.Size = new Size(144, 15);
+            labelOutput.Size = new Size(343, 103);
             labelOutput.TabIndex = 0;
             labelOutput.Text = "Best exchange rate found:";
+            labelOutput.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // BestRateHistoryView
+            // BestRateHistory
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
             Controls.Add(panelOutput);
             Controls.Add(panelInput);
-            Name = "BestRateHistoryView";
-            Text = "BestRateHistoryView";
+            Name = "BestRateHistory";
+            Size = new Size(800, 400);
             panelInput.ResumeLayout(false);
-            panelInput.PerformLayout();
             panelOutput.ResumeLayout(false);
-            panelOutput.PerformLayout();
             ResumeLayout(false);
         }
 

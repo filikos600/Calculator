@@ -9,7 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Calculator.Presenter
 {
-    public  class SQLiteDbContext : DbContext
+    /// <summary>
+    /// Data base context, contains following tables: Operations, OperationTypes, CurrencyRates, CurrencyRateCodes, CurrencyRateDates.
+    /// </summary>
+    public class SQLiteDbContext : DbContext
     {
         public DbSet<Operation> Operations { get; set; }
         public DbSet<OperationType> OperationTypes { get; set; }
@@ -21,6 +24,9 @@ namespace Calculator.Presenter
 
         public string DbPath { get; }
 
+        /// <summary>
+        /// Connect to "calc.db" database inside working directory
+        /// </summary>
         public SQLiteDbContext() {
             var path = AppContext.BaseDirectory;
             //var folder = Environment.SpecialFolder.LocalApplicationData;
@@ -30,6 +36,9 @@ namespace Calculator.Presenter
             InitializeDB();
         }
 
+        /// <summary>
+        /// Ensure that db contain Operation Types :"math" and "currency" and currency rate code "PLN" (since it's missing on nbp website).
+        /// </summary>
         private void InitializeDB()
         {
             Database.EnsureCreated();

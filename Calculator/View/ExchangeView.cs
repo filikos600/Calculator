@@ -12,14 +12,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Button = System.Windows.Forms.Button;
 
 namespace Calculator.View
 {
+
+    /// <summary>
+    /// UserControl that correspond to currency rate exchange calulator view.
+    /// </summary>
     public partial class ExchangeView : UserControl
     {
-        private readonly ExchangeEvaluator exchangeEvaluator;
-        private readonly ExpressionBuilder expressionBuilderA;
-        private readonly ExpressionBuilder expressionBuilderB;
+        private readonly IExchangeEvaluator exchangeEvaluator;
+        private readonly IExpressionBuilder expressionBuilderA;
+        private readonly IExpressionBuilder expressionBuilderB;
 
         private bool historyVisible = false;
         private List<string> operationsHistory;
@@ -27,12 +33,15 @@ namespace Calculator.View
         public event Action<ViewEnum>? RequestViewChange;
         public event Action<string, string>? RequestBestRateViewChange;
 
-        public ExchangeView(ExchangeEvaluator exchangeEvaluator, ExpressionBuilder expressionBuilderA, ExpressionBuilder expressionBuilderB)
+        public event Action<bool> RequestHistoryPanel;
+
+        public ExchangeView(IExchangeEvaluator exchangeEvaluator, IExpressionBuilder expressionBuilderA, IExpressionBuilder expressionBuilderB)
         {
             InitializeComponent();
+            this.VisibleChanged += ExchangeView_VisibleChanged;
 
             this.exchangeEvaluator = exchangeEvaluator;
-            this.expressionBuilderA = expressionBuilderA;  
+            this.expressionBuilderA = expressionBuilderA;
             this.expressionBuilderB = expressionBuilderB;
 
             expressionBuilderA.onlyTwoDecimal = true;
@@ -41,7 +50,7 @@ namespace Calculator.View
             expressionBuilderB.onlyTwoDecimal = true;
             expressionBuilderB.UpdateTextDisplay += EBUpdateTextDisplayB;
 
-            comboBoxView.Items.Add("Mathematic");
+            comboBoxView.Items.Add("Mathematical");
             comboBoxView.Items.Add("Currency Exchange");
             comboBoxView.SelectedIndex = 1;
 
@@ -51,17 +60,38 @@ namespace Calculator.View
 
         private async void ExchangeView_Load(object sender, EventArgs e)
         {
-            SetupComboBoxes(exchangeEvaluator.rates);
-            if (exchangeEvaluator.lastRate != null)
-                UpdateLastUpdateDate(exchangeEvaluator.lastRate);
+            SetupComboBoxes(exchangeEvaluator.GetRates());
+            UpdateRateLabel();
+            if (exchangeEvaluator.GetLastRateDate() != null)
+                UpdateLastUpdateDateLabel(exchangeEvaluator.GetLastRateDate());
 
             UpdateRates();
+            UpdateRateLabel();
 
         }
 
-        private void UpdateLastUpdateDate(DateTime time)
+        private void ExchangeView_VisibleChanged(object? sender, EventArgs e)
         {
-            labelLastUpdate.Text = time.ToString();
+            if (this.Visible)
+            {
+                expressionBuilderA.Reset();
+                expressionBuilderB.Reset();
+                comboBoxView.SelectedIndex = 1;
+            }
+        }
+
+        private void UpdateLastUpdateDateLabel(DateTime time)
+        {
+
+            labelLastUpdate.Text = $"updated: {time.Day.ToString()}.{time.Month.ToString()}.{time.Year.ToString()}";
+        }
+
+        private void UpdateRateLabel()
+        {
+            var firstCurr = comboBoxA.SelectedItem.ToString();
+            var secondCurr = comboBoxB.SelectedItem.ToString();
+            var rate = exchangeEvaluator.GetRate(firstCurr, secondCurr);
+            labelRate.Text = $"1 {firstCurr} = {rate.ToString("F2")} {secondCurr}";
         }
 
         private void UpdateComboBoxes(List<CurrencyRate> currencies)
@@ -160,7 +190,7 @@ namespace Calculator.View
             List<CurrencyRate> currencies;
             try
             {
-                currencies = await Task.Run(() => exchangeEvaluator.GetUpdatedExchanges());
+                currencies = await Task.Run(() => exchangeEvaluator.GetUpdatedExchangesFromDbOrApi());
             }
             catch (Exception HttpRequestException)
             {
@@ -171,13 +201,14 @@ namespace Calculator.View
             if (currencies.Count > 0)
             {
                 UpdateComboBoxes(currencies);
-                UpdateLastUpdateDate(currencies[0].CurrencyRateDate.rateDate);
+                UpdateLastUpdateDateLabel(currencies[0].CurrencyRateDate.rateDate);
             }
         }
 
         private void buttonUpdateRates_Click(object sender, EventArgs e)
         {
             UpdateRates();
+            UpdateRateLabel();
         }
 
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -190,6 +221,7 @@ namespace Calculator.View
                 comboBoxB.SelectedItem.ToString()
                 ).ToString("F2");
             UpdateTextDisplayB(resultB);
+            UpdateRateLabel();
         }
 
         private async void buttonSaveExchange_Click(object sender, EventArgs e)
@@ -204,6 +236,8 @@ namespace Calculator.View
 
             expressionBuilderA.Reset();
             expressionBuilderB.Reset();
+
+            UpdateHistory();
         }
 
         private void buttonHistory_Click(object sender, EventArgs e)
@@ -211,13 +245,12 @@ namespace Calculator.View
             historyVisible = !historyVisible;
             if (historyVisible)
             {
-                this.MinimumSize = new Size(MinimumSize.Width + 300, MinimumSize.Height);
+                RequestHistoryPanel(true);
                 UpdateHistory();
             }
             else
             {
-                this.MinimumSize = new Size(MinimumSize.Width - 300, MinimumSize.Height);
-                this.Width -= 300;
+                RequestHistoryPanel(false);
             }
             panelHistory.Visible = historyVisible;
         }
@@ -229,8 +262,10 @@ namespace Calculator.View
             listHistory.Items.Clear();
             foreach (var oper in operationsHistory)
             {
-                listHistory.Items.Add(oper);
+                listHistory.Items.Add($"  {oper}");
             }
+            if (operationsHistory.Count == 0)
+                listHistory.Items.Add("  history is empty");
         }
 
         private void buttonBestRate_Click(object sender, EventArgs e)
@@ -239,6 +274,11 @@ namespace Calculator.View
             string to = comboBoxB.SelectedItem.ToString();
 
             RequestBestRateViewChange?.Invoke(from, to);
+        }
+
+        private void buttonExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

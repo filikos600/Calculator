@@ -14,8 +14,15 @@ using System.Xml.Serialization;
 
 namespace Calculator.Presenter
 {
-    public class NbpAPIabuser
+    /// <summary>
+    /// Method that correspond for sending and processign API calls
+    /// </summary>
+    public static class NbpApiRequester
     {
+        /// <summary>
+        /// It sends an api request at nbp.pl to recieve table A with exchange rates. Then deserialize recieved XML into a dictionary where currency code is a key and exhcnage rate a value. It also reads date of the exchange.
+        /// </summary>
+        /// <returns>A task contains the touple of: Dictionary where currency code is a key and exhcnage rate a value; time of the exchange</returns>
         static public async Task<(Dictionary<string, double>,DateTime)> RequestData()
         {
             var dictRates = new Dictionary<string, double>();
@@ -33,7 +40,6 @@ namespace Calculator.Presenter
 
             var exchangeRatesTable = result.ExchangeRatesTable;
 
-            List<CurrencyRate> curerncyList = new List<CurrencyRate>();
             dictRates.Add("PLN", 1d);
             foreach (var rate in exchangeRatesTable.Rates)
             {

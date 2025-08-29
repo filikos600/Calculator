@@ -33,22 +33,25 @@
             // 
             // panel1
             // 
+            panel1.BackColor = Color.FromArgb(40, 40, 40);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(784, 411);
+            panel1.Size = new Size(800, 400);
             panel1.TabIndex = 1;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(784, 411);
+            BackColor = SystemColors.WindowFrame;
+            ClientSize = new Size(800, 400);
             Controls.Add(panel1);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            FormBorderStyle = FormBorderStyle.None;
             MinimumSize = new Size(450, 400);
             Name = "MainForm";
-            Text = "MainForm";
+            Text = "Calculator";
+            Load += MainForm_Load;
             ResumeLayout(false);
         }
 

@@ -13,9 +13,12 @@ using System.Windows.Forms;
 
 namespace Calculator.View
 {
+    /// <summary>
+    /// UserControl that can be switched to only from ExchangeView, it allows to view the highest exchange rate in given time.
+    /// </summary>
     public partial class BestRateHistory : UserControl
     {
-        private DatabaseManager databaseManager;
+        private IDatabaseManager databaseManager;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string CurrencyFrom { get; set; }
@@ -25,13 +28,23 @@ namespace Calculator.View
 
         public event Action<ViewEnum>? RequestViewChange;
 
-        public BestRateHistory(DatabaseManager databaseManager)
+        public BestRateHistory(IDatabaseManager databaseManager)
         {
             InitializeComponent();
+            this.VisibleChanged += ExchangeView_VisibleChanged;
 
             this.databaseManager = databaseManager;
 
             InitializePanels();
+        }
+
+        private void ExchangeView_VisibleChanged(object? sender, EventArgs e)
+        {
+            if (this.Visible)
+            {
+                dateTimePickerStart.Value = DateTime.Now.Date;
+                dateTimePickerEnd.Value = DateTime.Now.Date;
+            }
         }
 
         private void InitializePanels()
@@ -74,7 +87,7 @@ namespace Calculator.View
                 labelRate.Text = "Best exchange rate found on:";
                 labelDate.Visible = true;
                 labelDate.Text = time.Date.ToString();
-                labelRate.Text = $"{bestRate.ToString()} {CurrencyFrom}/{CurrencyTo}"; ;
+                labelRate.Text = $"{bestRate.ToString()} {CurrencyFrom} => {CurrencyTo}"; ;
             }
         }
     }

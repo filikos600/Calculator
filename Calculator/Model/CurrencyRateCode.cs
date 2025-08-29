@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Calculator.Model
 {
+    /// <summary>
+    /// Represents a 3-character currency code
+    /// </summary>
     [Index(nameof(rateCode), IsUnique = true)]
     public class CurrencyRateCode
     {

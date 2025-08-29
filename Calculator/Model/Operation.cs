@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Calculator.Data
 {
+    /// <summary>
+    /// Saves operations including: text of operation, it's result, time at wchich it happened and koreign key to operation type
+    /// </summary>
     public class Operation
     {
         [Key]

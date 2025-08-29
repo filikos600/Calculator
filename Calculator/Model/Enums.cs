@@ -12,7 +12,6 @@ namespace Calculator.Model
         ExchangeView,
         BestRateHistoryView
     }
-
     public enum DBOperationTypes
     {
         math,
