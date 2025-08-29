@@ -1,4 +1,5 @@
 ﻿using Calculator.Model;
+using Calculator.Presenter;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
@@ -15,11 +16,17 @@ namespace Calculator.View
 {
     public partial class MainForm : Form
     {
-        public MainForm()
+        private readonly MathView mathView;
+        private readonly ExchangeView exchangeView;
+        private readonly BestRateHistory bestRateHistory;
+        public MainForm(MathView mathView, ExchangeView exchangeView, BestRateHistory bestRateHistory)
         {
             InitializeComponent();
-            var view = new MathView();
-            panel1.Controls.Add(view);
+            this.mathView = mathView;
+            this.exchangeView = exchangeView;
+            this.bestRateHistory = bestRateHistory;
+
+            panel1.Controls.Add(mathView);
             HandleViewChange(ViewEnum.MathView);
         }
 
@@ -45,20 +52,22 @@ namespace Calculator.View
             switch (viewName)
             {
                 case ViewEnum.MathView:
-                    ChangeView(new MathView());
+                    ChangeView(mathView);
                     break;
                 case ViewEnum.ExchangeView:
-                    ChangeView(new ExchangeView());
+                    ChangeView(exchangeView);
                     break;
                 default:
-                    ChangeView(new MathView());
+                    ChangeView(mathView);
                     break;
             }
         }
 
         private void HandleBestRateViewChange(string curFrom, string curTo)
         {
-            ChangeView(new BestRateHistory(curFrom, curTo));
+            bestRateHistory.CurrencyFrom = curFrom;
+            bestRateHistory.CurrencyTo = curTo;
+            ChangeView(bestRateHistory);
         }
     }
 }

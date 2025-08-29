@@ -15,17 +15,22 @@ namespace Calculator.View
 {
     public partial class BestRateHistory : UserControl
     {
-        public event Action<ViewEnum>? RequestViewChange;
         private DatabaseManager databaseManager;
-        private string currencyFrom;
-        private string currencyTo;
 
-        public BestRateHistory(string currencyFrom, string currencyTo)
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string CurrencyFrom { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string CurrencyTo { get; set; }
+
+        public event Action<ViewEnum>? RequestViewChange;
+
+        public BestRateHistory(DatabaseManager databaseManager)
         {
-            this.currencyFrom = currencyFrom;
-            this.currencyTo = currencyTo;
-            databaseManager = new DatabaseManager();
             InitializeComponent();
+
+            this.databaseManager = databaseManager;
+
             InitializePanels();
         }
 
@@ -55,7 +60,7 @@ namespace Calculator.View
 
             DateTime time;
             string bestRate;
-            (bestRate, time) = await databaseManager.GetBestRateFromPeriod(currencyFrom, currencyTo, startPeriod, endPeriod);
+            (bestRate, time) = await databaseManager.GetBestRateFromPeriod(CurrencyFrom, CurrencyTo, startPeriod, endPeriod);
             panelInput.Visible = false;
             panelOutput.Visible = true;
 
@@ -69,7 +74,7 @@ namespace Calculator.View
                 labelRate.Text = "Best exchange rate found on:";
                 labelDate.Visible = true;
                 labelDate.Text = time.Date.ToString();
-                labelRate.Text = $"{bestRate.ToString()} {currencyFrom}/{currencyFrom}"; ;
+                labelRate.Text = $"{bestRate.ToString()} {CurrencyFrom}/{CurrencyTo}"; ;
             }
         }
     }

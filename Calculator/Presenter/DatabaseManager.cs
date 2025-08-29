@@ -11,11 +11,14 @@ namespace Calculator.Presenter
 {
     public class DatabaseManager
     {
+        private readonly SQLiteDbContext db;
         
+        public DatabaseManager(SQLiteDbContext context) {
+            db = context;
+        }
+
         public async Task AddOperation(string operationText, double result, string operationName)
         {
-            using var db = new SQLiteDbContext();
-
             var operationType = await db.OperationTypes.FirstAsync(t => t.OperationName == operationName);
 
             db.Operations.Add(new Operation {
@@ -28,7 +31,6 @@ namespace Calculator.Presenter
 
         public async Task<List<Operation>> GetOperations()
         {
-            using var db = new SQLiteDbContext();
             return await db.Operations
                      .OrderByDescending(o => o.Id)
                      .ToListAsync();
@@ -42,7 +44,6 @@ namespace Calculator.Presenter
         /// <returns></returns>
         public async Task<CurrencyRateDate> AddExchangeRateDate(DateTime time)
         {
-            using var db = new SQLiteDbContext();
 
             var existingRateDate = await db.CurrencyRateDates.FirstOrDefaultAsync(t => t.rateDate == time);
 
@@ -59,7 +60,6 @@ namespace Calculator.Presenter
 
         public async Task<CurrencyRateCode> AddExchangeRateCode(string code)
         {
-            using var db = new SQLiteDbContext();
             var currencyCode = await db.CurrencyRateCodes.FirstOrDefaultAsync(c => c.rateCode == code);
             if (currencyCode == null)
             {
@@ -81,7 +81,6 @@ namespace Calculator.Presenter
         public async Task<List<CurrencyRate>> AddExchangeRates(Dictionary<string,double> rateDict, DateTime date)
         {
             var currencies = new List<CurrencyRate>();
-            using var db = new SQLiteDbContext();
 
             var currencyRateDate = await Task.Run(() => AddExchangeRateDate(date));
 
@@ -118,8 +117,6 @@ namespace Calculator.Presenter
 
         public async Task<List<CurrencyRate>> GetExchange()
         {
-            using var db = new SQLiteDbContext();
-
             var latestDate = await db.CurrencyRateDates
                 .OrderByDescending(d => d.rateDate)
                 .FirstOrDefaultAsync();
@@ -136,8 +133,6 @@ namespace Calculator.Presenter
 
         public async Task<(string, DateTime)> GetBestRateFromPeriod(string currencyFrom, string currencyTo, DateTime startPeriod, DateTime endPeriod)
         {
-            using var db = new SQLiteDbContext();
-
             var currencyCodeFrom = await db.CurrencyRateCodes.FirstOrDefaultAsync(c => c.rateCode == currencyFrom);
             var currencyCodeTo = await db.CurrencyRateCodes.FirstOrDefaultAsync(c => c.rateCode == currencyTo);
 

@@ -10,19 +10,15 @@ namespace Calculator.Presenter
 {
     public class ExpressionBuilder
     {
-        //private MathEvaluator mathEvaluator;
         public event Action<string> UpdateTextDisplay;
         public string expression { get; set; }
         private int openedParenthesis;
         private bool fractionalPart;
-        private bool onlyTwoDecimal;
+        public bool onlyTwoDecimal { get; set; }
 
-        public ExpressionBuilder(bool onlyTwoDecimal = false)      //TODO depedency inejctions
+        public ExpressionBuilder()
         {
-            this.onlyTwoDecimal = onlyTwoDecimal;
             Reset();
-            //mathEvaluator = new MathEvaluator();
-           
         }
 
         public void Reset(bool update=true)

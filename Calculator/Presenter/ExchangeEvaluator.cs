@@ -13,16 +13,16 @@ namespace Calculator.Presenter
     public class ExchangeEvaluator
     {
         public Dictionary<string,double> rates;
-        public  DateTime? lastRate;
+        public  DateTime lastRate;
 
-        private DatabaseManager databaseManager;
+        private readonly DatabaseManager databaseManager;
 
-        public ExchangeEvaluator()
+        public ExchangeEvaluator(DatabaseManager databaseManager)
         {
             rates = new Dictionary<string, double>();
             getExchangeFromXml();
 
-            databaseManager = new DatabaseManager();
+            this.databaseManager = databaseManager;
         }
 
         public void getExchangeFromXml()
@@ -50,24 +50,9 @@ namespace Calculator.Presenter
             return;
         }
 
-        public async Task UpdateExchanges()
+        public async Task<List<CurrencyRate>> GetUpdatesFromDB()
         {
-            var rates = await Task.Run(() => databaseManager.GetExchange());
-            if (rates.Count == 0)
-            {
-                await Task.Run(() => UpdateExchangesFromApi());
-                return;
-            }
-
-            var dayToday = DateTime.Today;
-            foreach (var rate in rates)
-            {
-                if (rate.CurrencyRateDate.rateDate != dayToday)
-                {
-                    await Task.Run(() => UpdateExchangesFromApi());
-                    return;
-                }
-            }
+            return await Task.Run(() => databaseManager.GetExchange());
         }
 
         public async Task<List<CurrencyRate>> GetUpdatedExchanges()
@@ -91,19 +76,13 @@ namespace Calculator.Presenter
                 }
             }
             return rates;
-
         }
 
         public async Task UpdateExchangesFromApi()
         {
             Dictionary<string, double> ratesDict;
             (ratesDict, lastRate) = await Task.Run(() => NbpAPIabuser.RequestData());
-            if (lastRate == null)
-            {
-                return;
-            }
-
-            await Task.Run(() => databaseManager.AddExchangeRates(ratesDict, lastRate.Value));
+            await Task.Run(() => databaseManager.AddExchangeRates(ratesDict, lastRate));
         }
 
         public double Evaluate(double value, CurrencyRate currencyFrom, CurrencyRate currencyTo)

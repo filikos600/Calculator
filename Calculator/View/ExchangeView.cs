@@ -17,30 +17,46 @@ namespace Calculator.View
 {
     public partial class ExchangeView : UserControl
     {
-        private ExchangeEvaluator exchangeEvaluator;
-        private ExpressionBuilder expressionBuilderA;
-        private ExpressionBuilder expressionBuilderB;
+        private readonly ExchangeEvaluator exchangeEvaluator;
+        private readonly ExpressionBuilder expressionBuilderA;
+        private readonly ExpressionBuilder expressionBuilderB;
+
         private bool historyVisible = false;
         private List<string> operationsHistory;
 
         public event Action<ViewEnum>? RequestViewChange;
         public event Action<string, string>? RequestBestRateViewChange;
 
-        public ExchangeView()
+        public ExchangeView(ExchangeEvaluator exchangeEvaluator, ExpressionBuilder expressionBuilderA, ExpressionBuilder expressionBuilderB)
         {
             InitializeComponent();
-            //currencyRates = new Dictionary<string, double>();
-            exchangeEvaluator = new ExchangeEvaluator();
-            expressionBuilderA = new ExpressionBuilder(onlyTwoDecimal: true);
+
+            this.exchangeEvaluator = exchangeEvaluator;
+            this.expressionBuilderA = expressionBuilderA;  
+            this.expressionBuilderB = expressionBuilderB;
+
+            expressionBuilderA.onlyTwoDecimal = true;
             expressionBuilderA.UpdateTextDisplay += EBUpdateTextDisplayA;
-            expressionBuilderB = new ExpressionBuilder(onlyTwoDecimal: true);
+
+            expressionBuilderB.onlyTwoDecimal = true;
             expressionBuilderB.UpdateTextDisplay += EBUpdateTextDisplayB;
+
             comboBoxView.Items.Add("Mathematic");
             comboBoxView.Items.Add("Currency Exchange");
             comboBoxView.SelectedIndex = 1;
 
             operationsHistory = new List<string>();
             panelHistory.Visible = false;
+        }
+
+        private async void ExchangeView_Load(object sender, EventArgs e)
+        {
+            SetupComboBoxes(exchangeEvaluator.rates);
+            if (exchangeEvaluator.lastRate != null)
+                UpdateLastUpdateDate(exchangeEvaluator.lastRate);
+
+            UpdateRates();
+
         }
 
         private void UpdateLastUpdateDate(DateTime time)
@@ -50,6 +66,7 @@ namespace Calculator.View
 
         private void UpdateComboBoxes(List<CurrencyRate> currencies)
         {
+
             var selectedA = comboBoxA.SelectedIndex;
             var selectedTo = comboBoxB.SelectedIndex;
             comboBoxA.Items.Clear();
@@ -106,18 +123,6 @@ namespace Calculator.View
                 textBoxValueB.Invoke(new Action(() => textBoxValueB.Text = formattedString));
             else
                 textBoxValueB.Text = formattedString;
-
-            //UpdateTextDisplayA(exchangeEvaluator.Evaluate(text, comboBoxB.SelectedItem.ToString(), comboBoxA.SelectedItem.ToString()).ToString());
-        }
-
-        private async void ExchangeView_Load(object sender, EventArgs e)
-        {
-            SetupComboBoxes(exchangeEvaluator.rates);
-            if (exchangeEvaluator.lastRate != null)
-                UpdateLastUpdateDate(exchangeEvaluator.lastRate.Value);
-
-            var currencies = await Task.Run(() => exchangeEvaluator.GetUpdatedExchanges());
-            UpdateComboBoxes(currencies);
         }
 
         private void comboBoxView_SelectedIndexChanged(object sender, EventArgs e)
@@ -150,11 +155,29 @@ namespace Calculator.View
             expressionBuilderB.Reset();
         }
 
-        private async void buttonUpdateRates_Click(object sender, EventArgs e)
+        private async void UpdateRates()
         {
-            var currencies = await Task.Run(() => exchangeEvaluator.GetUpdatedExchanges());
-            UpdateComboBoxes(currencies);
-            UpdateLastUpdateDate(currencies[0].CurrencyRateDate.rateDate);
+            List<CurrencyRate> currencies;
+            try
+            {
+                currencies = await Task.Run(() => exchangeEvaluator.GetUpdatedExchanges());
+            }
+            catch (Exception HttpRequestException)
+            {
+                MessageBox.Show($"Failed to fetch accurate exchange rates", "Failed to reach API", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                currencies = await Task.Run(() => exchangeEvaluator.GetUpdatesFromDB());
+
+            }
+            if (currencies.Count > 0)
+            {
+                UpdateComboBoxes(currencies);
+                UpdateLastUpdateDate(currencies[0].CurrencyRateDate.rateDate);
+            }
+        }
+
+        private void buttonUpdateRates_Click(object sender, EventArgs e)
+        {
+            UpdateRates();
         }
 
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -216,11 +239,6 @@ namespace Calculator.View
             string to = comboBoxB.SelectedItem.ToString();
 
             RequestBestRateViewChange?.Invoke(from, to);
-
-            //using (var newForm = new BestRateHistoryView(from, to))
-            //{
-            //    newForm.ShowDialog();
-            //}
         }
     }
 }

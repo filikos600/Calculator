@@ -265,9 +265,9 @@
             // 
             buttonSave.Location = new Point(377, 92);
             buttonSave.Name = "buttonSave";
-            buttonSave.Size = new Size(75, 23);
+            buttonSave.Size = new Size(103, 23);
             buttonSave.TabIndex = 22;
-            buttonSave.Text = "buttonSaveExchange";
+            buttonSave.Text = "Save To History";
             buttonSave.UseVisualStyleBackColor = true;
             buttonSave.Click += buttonSaveExchange_Click;
             // 

@@ -18,30 +18,32 @@ namespace Calculator.View
 {
     public partial class MathView : UserControl
     {
-        private ExpressionBuilder expressionBuilder;
-        private bool historyVisible = false;
-        private MathEvaluator mathEvaluator;
+        private readonly ExpressionBuilder expressionBuilder;
+        private readonly MathEvaluator mathEvaluator;
+
         private List<string> operationsHistory;
+        private bool historyVisible = false;
 
         public event Action<ViewEnum>? RequestViewChange;
 
-        public MathView()
+        public MathView(ExpressionBuilder expressionBuilder, MathEvaluator mathEvaluator)
         {
             InitializeComponent();
-            expressionBuilder = new ExpressionBuilder();
+
+            this.expressionBuilder = expressionBuilder;
+            this.mathEvaluator = mathEvaluator;
+
+            expressionBuilder.onlyTwoDecimal = false;
             expressionBuilder.UpdateTextDisplay += ExpressionBuilderUpdateTextDisplay;
+           
             operationsHistory = new List<string>();
-
             panelHistory.Visible = false;
-
-            mathEvaluator = new MathEvaluator();
 
             comboBoxView.Items.Add("Mathematic");
             comboBoxView.Items.Add("Currency Exchange");
             comboBoxView.SelectedIndex = 0;
 
             UpdateHistory();
-
         }
 
         private void MathView_Load(object sender, EventArgs e)

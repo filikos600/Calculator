@@ -11,15 +11,14 @@ namespace Calculator.Presenter
 {
     public class MathEvaluator
     {
+        private readonly DatabaseManager databaseManager;
 
         private const string OPERATORS = "+-x÷^";
         private const string FUNCTIONS = "!√";
 
-        private DatabaseManager databaseManager;
-
-        public MathEvaluator()
+        public MathEvaluator(DatabaseManager databaseManager)
         {
-            databaseManager = new DatabaseManager();
+            this.databaseManager = databaseManager;
         }
 
         /// <summary>
